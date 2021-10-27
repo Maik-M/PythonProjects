@@ -101,8 +101,7 @@ class PokedexInterface(Interface):
     def start(self):
         """Função de start com lógica para receber dados e atualizar valores da tela."""
         self.make_window()
-        reiniciar = 1
-        while reiniciar != 0:
+        while True:
             try:
                 while True:
                     self.input_values()
@@ -112,7 +111,6 @@ class PokedexInterface(Interface):
                         self.update_window()
                     if self.events == sg.WINDOW_CLOSED or self.events == 'Quit':
                         self.window.close()
-                        reiniciar = 0
                         break
             except KeyError:
                 self.update_err_window_off('CAMPO VAZIO!\n\nPOR FAVOR\nINSIRA O NOME\nDO POKÉMON.')
