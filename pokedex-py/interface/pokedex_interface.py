@@ -1,5 +1,4 @@
 import json
-
 import PySimpleGUI as sg
 
 from interface.interface import Interface
@@ -19,7 +18,7 @@ class PokedexInterface(Interface):
         """Inicia a Janela."""
         self.layout = [
             self.input_line,
-            # [sg.Button('REINICIAR', key='-restart_button-', auto_size_button=True, expand_x=True, visible=False)],
+            [sg.Button('REINICIAR', key='-restart_button-', auto_size_button=True, expand_x=True, visible=False)],
             [sg.Frame(layout=[
                 [sg.Column(
                     self.sprite_img_square_line,
@@ -53,9 +52,10 @@ class PokedexInterface(Interface):
         self.window['-restart_button-'].update(visible=True)
 
     def update_err_window_on(self):
-        self.window['-pokemon-'].update(visuble=True)
+        self.window['-pokemon-'].update(visible=True)
         self.window['pokemon_name'].update(visible=True)
-        self.window['-err-'].update('PESQUISE O POKÉMON', key='-err-', font=('Arial Black', 10), text_color='white')
+        self.window['-ok_button-'].update(visible=True)
+        self.window['-err-'].update('PESQUISE O POKÉMON', font=('Arial Black', 10), text_color='white')
         self.window['-restart_button-'].update(visible=False)
 
     def update_window(self):
@@ -78,6 +78,9 @@ class PokedexInterface(Interface):
         # Atuliza o peso
         self.window['-height-'].update(f'{self._poke_api.height}m')
         # Atualiza os tipos do pokémon percorrendo a lista de tipos e torna o texto visível
+        if len(self._poke_api.type_list) <= 2:
+            self.window['-type_1-'].update('', visible=False)
+            self.window['-type_2-'].update('', visible=False)
         [self.window[f'-type_{str(i)}-'].update(f'{str(value_type).capitalize()}', visible=True)
          for i, value_type in enumerate(self._poke_api.type_list)]
         # Atualiza o peso
@@ -86,7 +89,7 @@ class PokedexInterface(Interface):
         if len(self._poke_api.abilities_list) <= 2:
             self.window['-ability_1-'].update('')
             self.window['-ability_2-'].update('')
-        [self.window[f'-ability_{str(i)}-'].update(f'-- {str(ability).replace("-", " ")}', visible=True)
+        [self.window[f'-ability_{str(i)}-'].update(f'-- {str(ability).replace("-", " ")}')
          for i, ability in enumerate(self._poke_api.abilities_list)]
         # Atualiza o site do Pokedex
         self.window['-more_about-'].update(f'Mais sobre: https://www.pokemon.com/br/pokedex/'
@@ -96,56 +99,38 @@ class PokedexInterface(Interface):
         """Recebe os valores e eventos de clicks."""
         self.events, self.values = self.window.Read()
 
-    def start(self):
-        """Função de start com lógica para receber dados e atualizar valores da tela."""
-        self.make_window()
-        try:
-            while True:
-                self.input_values()
-                if self.events == '-ok_button-':
-                    self.pokemon_name = self.values['pokemon_name'].lower()
-                    self._poke_api.get_values(self.pokemon_name)
-                    self.update_window()
-                if self.events == sg.WINDOW_CLOSED or self.events == 'Quit':
-                    self.window.close()
-                    break
-        except KeyError:
-            self.update_err_window_off('CAMPO VAZIO!\n\nPOR FAVOR\nINSIRA O NOME\nDO POKÉMON.')
-            self.input_values()
-            if self.events == '-restart_button-':
-                self.update_err_window_on()
-        except json.JSONDecodeError:
-            self.update_err_window_off('VERIFIQUE O\nNOME DO\nPOKÉMON\n\nREINICIE OU\nFECHE A\nJANELA')
-            self.input_values()
-            if self.events == '-restart_button-':
-                self.update_err_window_on()
+    def update_values(self):
+        """Recebe valores e atualiza chamando o método update_window()."""
+        self.pokemon_name = self.values['pokemon_name'].lower()
+        self._poke_api.get_values(self.pokemon_name)
+        self.update_window()
 
-            # if self.values['pokemon_name'] == '':
-            #     self.window.close()
-            #     self.layout = [
-            #         [sg.Text('', key='-err-', font=('Arial Black', 25), justification='center', text_color='yellow',
-            #                  size=(50, 5))],
-            #         [sg.Button('REINICIAR', auto_size_button=True, expand_x=True)]
-            #     ]
-            #     self.window = sg.Window('Pokedex', self.layout, size=(500, 500), finalize=True,
-            #                             titlebar_icon='./img/pokeball-icon-window.png', use_custom_titlebar=True)
-            #     self.window['-err-'].update('CAMPO VAZIO!\n\nPOR FAVOR\nINSIRA O NOME\nDO POKÉMON.')
-            #     self.input_values()
-            #     if self.events == 'REINICIAR':
-            #         self.window.close()
-            #         self.start()
-            # elif Exception:
-            #     self.window.close()
-            #     self.layout = [
-            #         [sg.Text('', key='-err-', font=('Arial Black', 25), justification='center', text_color='yellow',
-            #                  size=(50, 7))],
-            #         [sg.Button('REINICIAR', auto_size_button=True, expand_x=True)]
-            #     ]
-            #     self.window = sg.Window('Pokedex', self.layout, size=(500, 500), finalize=True,
-            #                             titlebar_icon='./img/pokeball-icon-window.png', use_custom_titlebar=True)
-            #     self.window['-err-'].update('VERIFIQUE O\nNOME DO\nPOKÉMON'
-            #                                 '\n\nREINICIE OU\nFECHE A\nJANELA')
-            #     self.input_values()
-            #     if self.events == 'REINICIAR':
-            #         self.window.close()
-            #         self.start()
+        # if self.values['pokemon_name'] == '':
+        #     self.window.close()
+        #     self.layout = [
+        #         [sg.Text('', key='-err-', font=('Arial Black', 25), justification='center', text_color='yellow',
+        #                  size=(50, 5))],
+        #         [sg.Button('REINICIAR', auto_size_button=True, expand_x=True)]
+        #     ]
+        #     self.window = sg.Window('Pokedex', self.layout, size=(500, 500), finalize=True,
+        #                             titlebar_icon='./img/pokeball-icon-window.png', use_custom_titlebar=True)
+        #     self.window['-err-'].update('CAMPO VAZIO!\n\nPOR FAVOR\nINSIRA O NOME\nDO POKÉMON.')
+        #     self.input_values()
+        #     if self.events == 'REINICIAR':
+        #         self.window.close()
+        #         self.start()
+        # elif Exception:
+        #     self.window.close()
+        #     self.layout = [
+        #         [sg.Text('', key='-err-', font=('Arial Black', 25), justification='center', text_color='yellow',
+        #                  size=(50, 7))],
+        #         [sg.Button('REINICIAR', auto_size_button=True, expand_x=True)]
+        #     ]
+        #     self.window = sg.Window('Pokedex', self.layout, size=(500, 500), finalize=True,
+        #                             titlebar_icon='./img/pokeball-icon-window.png', use_custom_titlebar=True)
+        #     self.window['-err-'].update('VERIFIQUE O\nNOME DO\nPOKÉMON'
+        #                                 '\n\nREINICIE OU\nFECHE A\nJANELA')
+        #     self.input_values()
+        #     if self.events == 'REINICIAR':
+        #         self.window.close()
+        #         self.start()
