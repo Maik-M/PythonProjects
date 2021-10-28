@@ -3,7 +3,7 @@ import requests
 
 class PokeApi:
     def __init__(self):
-        """Classe que recebe os vbalores da PokeApi"""
+        """Classe que recebe os valores da PokeApi"""
         self.api_site = ''
 
         # Listas
@@ -28,7 +28,7 @@ class PokeApi:
         values = self.api_values(pokemon)
         self.abilities_list = [ability['ability']['name'].title() for ability in values['abilities']]  # Lista de Skills
         self.type_list = [type_p['type']['name'] for type_p in values['types']]  # Lista de tipos
-        self.stats_list = [stats for stats in values['stats']]
+        self.stats_list = [stats for stats in values['stats']]  # Lista de status
         self.height = float(int(values['height']) / 10)  # Altura
         self.weight = float(int(values['weight']) / 10)  # Peso
         self.poke_id = values['id']  # ID

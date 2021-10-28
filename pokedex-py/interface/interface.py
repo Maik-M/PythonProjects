@@ -19,10 +19,10 @@ class Interface:
                            [sg.Text('', expand_x=True)]]
 
         # Sprite Square
-        self.sprite_img_square_line = [sg.Frame(layout=[
+        self.sprite_img_square_line = [[sg.Frame(layout=[
             [sg.Text('', pad=(46, 42), key='-img_square-'),
              sg.Image(key='-img-')]],
-            title=' Sprite ', key='-f_1-', border_width=1, font=('Arial', 10))]
+            title=' Sprite ', key='-f_1-', border_width=1, font=('Arial', 10))]]
 
         # Stats Line
         self.stats_line = [[sg.Text('HP:', key='-s_1-', font=('Arial Black', 7)),
@@ -55,13 +55,15 @@ class Interface:
                           sg.Text('', key='-type_2-', font=('Arial', 10), text_color='white', visible=False)]
 
         # Abilities line
-        self.abilities_line = [sg.Text('HABILIDADES', key='-a_1-', font=('Arial Black', 10), pad=((4, 0), (0, 0)))]
-        self.output_abilities_line = [sg.Output(key='-abilities-', background_color='#64778d', font=('Arial', 10),
-                                                text_color='white', pad=((5, 150), (0, 12)), expand_y=True)]
+        self.abilities_line = [sg.Text('LISTA DE HABILIDADES', key='-a_1-', font=('Arial Black', 10),
+                                       pad=((5, 0), (15, 0)))]
+        self.ability_line_0 = [sg.Text('', key='-ability_0-', font=('Arial', 10), pad=((5, 0), (0, 0)), visible=True)]
+        self.ability_line_1 = [sg.Text('', key='-ability_1-', font=('Arial', 10), pad=((5, 0), (0, 0)), visible=True)]
+        self.ability_line_2 = [sg.Text('', key='-ability_2-', font=('Arial', 10), pad=((5, 0), (0, 0)), visible=True)]
 
         # More about line
         self.more_about_line = [sg.Text('', key='-more_about-', font=('Arial', 8), text_color='white',
-                                        size=(50, 1), pad=((5, 0), (0, 0)))]
+                                        size=(50, 1), pad=((0, 0), (0, 0)))]
 
         self.err_layout = [
             [sg.Text('', key='-err-', font=('Arial Black', 25), justification='center', text_color='yellow',
