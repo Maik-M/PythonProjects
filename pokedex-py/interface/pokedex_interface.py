@@ -10,6 +10,7 @@ class PokedexInterface(Interface):
     def __init__(self):
         super().__init__()
         self.pokemon_name = ''
+
         # API
         self._poke_api = PokeApi()
 
@@ -17,7 +18,6 @@ class PokedexInterface(Interface):
         """Inicia a Janela."""
         self.layout = [
             self.input_line,
-            [sg.Button('REINICIAR', key='-restart_button-', auto_size_button=True, expand_x=True, visible=False)],
             [sg.Frame(layout=[
                 [sg.Column(
                     self.sprite_img_square_line,
@@ -43,19 +43,15 @@ class PokedexInterface(Interface):
                                 titlebar_icon='./img/pokeball-icon-window.png', use_custom_titlebar=True,
                                 finalize=True)
 
-    def update_err_window_off(self, message):
-        self.window['-pokemon-'].update(visible=False)
-        self.window['-ok_button-'].update(visible=False)
-        self.window['pokemon_name'].update(visible=False)
-        self.window['-err-'].update(f'{message}', font=('Arial Black', 25), text_color='yellow')
-        self.window['-restart_button-'].update(visible=True)
+    def input_values(self):
+        """Recebe os valores e eventos de clicks."""
+        self.events, self.values = self.window.Read()
 
-    def update_err_window_on(self):
-        self.window['-pokemon-'].update(visible=True)
-        self.window['pokemon_name'].update(visible=True)
-        self.window['-ok_button-'].update(visible=True)
-        self.window['-err-'].update('PESQUISE O POKÉMON', font=('Arial Black', 10), text_color='white')
-        self.window['-restart_button-'].update(visible=False)
+    def update_values(self):
+        """Recebe valores e atualiza chamando o método update_window()."""
+        self.pokemon_name = self.values['pokemon_name'].lower()
+        self._poke_api.get_values(self.pokemon_name)
+        self.update_window()
 
     def update_window(self):
         """Atualiza os valores da janela."""
@@ -93,43 +89,3 @@ class PokedexInterface(Interface):
         # Atualiza o site do Pokedex
         self.window['-more_about-'].update(f'Mais sobre: https://www.pokemon.com/br/pokedex/'
                                            f'{self.pokemon_name.replace(" ", "")}/')
-
-    def input_values(self):
-        """Recebe os valores e eventos de clicks."""
-        self.events, self.values = self.window.Read()
-
-    def update_values(self):
-        """Recebe valores e atualiza chamando o método update_window()."""
-        self.pokemon_name = self.values['pokemon_name'].lower()
-        self._poke_api.get_values(self.pokemon_name)
-        self.update_window()
-
-        # if self.values['pokemon_name'] == '':
-        #     self.window.close()
-        #     self.layout = [
-        #         [sg.Text('', key='-err-', font=('Arial Black', 25), justification='center', text_color='yellow',
-        #                  size=(50, 5))],
-        #         [sg.Button('REINICIAR', auto_size_button=True, expand_x=True)]
-        #     ]
-        #     self.window = sg.Window('Pokedex', self.layout, size=(500, 500), finalize=True,
-        #                             titlebar_icon='./img/pokeball-icon-window.png', use_custom_titlebar=True)
-        #     self.window['-err-'].update('CAMPO VAZIO!\n\nPOR FAVOR\nINSIRA O NOME\nDO POKÉMON.')
-        #     self.input_values()
-        #     if self.events == 'REINICIAR':
-        #         self.window.close()
-        #         self.start()
-        # elif Exception:
-        #     self.window.close()
-        #     self.layout = [
-        #         [sg.Text('', key='-err-', font=('Arial Black', 25), justification='center', text_color='yellow',
-        #                  size=(50, 7))],
-        #         [sg.Button('REINICIAR', auto_size_button=True, expand_x=True)]
-        #     ]
-        #     self.window = sg.Window('Pokedex', self.layout, size=(500, 500), finalize=True,
-        #                             titlebar_icon='./img/pokeball-icon-window.png', use_custom_titlebar=True)
-        #     self.window['-err-'].update('VERIFIQUE O\nNOME DO\nPOKÉMON'
-        #                                 '\n\nREINICIE OU\nFECHE A\nJANELA')
-        #     self.input_values()
-        #     if self.events == 'REINICIAR':
-        #         self.window.close()
-        #         self.start()

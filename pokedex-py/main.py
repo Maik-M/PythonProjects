@@ -13,18 +13,18 @@ while True:
             pokedex.window.close()
             break
     except KeyError:
-        pokedex.update_err_window_off('CAMPO VAZIO!\n\nPOR FAVOR\nINSIRA O NOME\nDO POKÉMON.')
-        pokedex.input_values()
-        if pokedex.events == '-restart_button-':
-            pokedex.update_err_window_on()
-        elif pokedex.events == sg.WINDOW_CLOSED:
+        event = sg.popup_ok('CAMPO VAZIO!\n\nPor favor, insira\no nome do\nPokémon.', title='ERRO',
+                            font=('Arial Black', 18), text_color='yellow')
+        if event == 'OK':
+            pass
+        else:
             pokedex.window.close()
             break
     except json.JSONDecodeError:
-        pokedex.update_err_window_off('VERIFIQUE O\nNOME DO\nPOKÉMON\n\nREINICIE OU\nFECHE A\nJANELA')
-        pokedex.input_values()
-        if pokedex.events == '-restart_button-':
-            pokedex.update_err_window_on()
-        elif pokedex.events == sg.WINDOW_CLOSED:
+        event = sg.popup_ok('POKÉMON NÃO\nENCONTRADO!\n\nOK: Continuar\nFECHAR: Parar', title='ERRO',
+                            font=('Arial Black', 18), text_color='yellow')
+        if event == 'OK':
+            pass
+        else:
             pokedex.window.close()
             break
