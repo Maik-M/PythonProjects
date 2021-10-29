@@ -5,4 +5,4 @@
 
 ### Projeto Atual - Pokedex, usando a PokeAPI
 - No momento eu estou trabalhando em uma Interface com PySimpleGUI para recerber dados de API 'PokeAPI'.
-- É basicamento um Pokedex, onde você pode pesquisar o nome do Pokémon desejado e retornará a ficha do Pokémon.
+- É basicamente um Pokedex, onde você pode pesquisar o nome do Pokémon desejado e retornará a ficha do Pokémon.
