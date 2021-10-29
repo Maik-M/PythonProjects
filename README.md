@@ -9,5 +9,5 @@
 <br><br>
 
 ### Projeto Atual - Pequeno sistema de faturamento hospitalar 🔨
-- Ainda está em faze de planejamento; 
-- A ideia surgiu para ajudar minha mãe que trabalha em um hospital, para deixar a contagem diária, semanal e mensal de pacientes menos cansativa com um sistema que na ideia original, será alimentado todo o dia, e ao final do mês, gerar uma planilha com a contagem total.
+- Ainda está em fase de planejamento; 
+- A ideia surgiu para ajudar minha mãe que trabalha em um hospital, para deixar a contagem diária, semanal e mensal de pacientes menos cansativa com um sistema que na ideia original, será alimentado todo o dia, e ao final do mês, gerar uma planilha com a contagem total de todos o setores do hospital.
