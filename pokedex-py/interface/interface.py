@@ -3,7 +3,7 @@ import PySimpleGUI as sg
 
 class Interface:
     def __init__(self):
-        """Interface do programa dividida em linhas."""
+        """Essa classe guarda cada linha separada do Layout, eventos e valores de input."""
         # Variáveis
         self.layout = []
         self.window = None
@@ -64,9 +64,3 @@ class Interface:
         # More about line
         self.more_about_line = [sg.Text('', key='-more_about-', font=('Arial', 8), text_color='white',
                                         size=(50, 1), pad=((0, 0), (0, 0)))]
-
-        self.err_layout = [
-            [sg.Text('', key='-err-', font=('Arial Black', 25), justification='center', text_color='yellow',
-                     size=(50, 5))],
-            [sg.Button('REINICIAR', auto_size_button=True, expand_x=True)]
-        ]
