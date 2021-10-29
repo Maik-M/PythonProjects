@@ -1,4 +1,3 @@
-import json
 import PySimpleGUI as sg
 
 from interface.interface import Interface
