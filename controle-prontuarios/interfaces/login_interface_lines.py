@@ -2,6 +2,8 @@ import PySimpleGUI as sg
 
 
 class LoginInterfaceLines:
+    """Tela de login."""
+
     def __init__(self):
         self._login_layout = None
         self._login_window = None

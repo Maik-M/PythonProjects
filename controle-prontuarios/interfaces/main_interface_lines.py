@@ -16,8 +16,6 @@ class MainInterfaceLines:
         mounths = ({'Jan': 1, 'Fev': 2, 'Mar': 3, 'Abr': 4, 'Mai': 5, 'Jun': 6,
                     'Jul': 7, 'Ago': 8, 'Set': 9, 'Out': 10, 'Nov': 11, 'Dez': 12})
         years = [int(year) for year in range(date.today().year, date.today().year - 150, -1)]
-        hours = [int(hour) for hour in range(0, 24)]
-        minutes = [int(minute) for minute in range(1, 60)]
 
         # Lines --------------------------------------------------------------------------------------------------------
         # Registration Lines Tab
@@ -145,7 +143,9 @@ class MainInterfaceLines:
                       pad=((5, 5), (0, 5)))]
         ]
         self._in_out_right_line = [
-
+            [sg.Button('Saída', key='-io_saida-', size=(10, 1), pad=((5, 5), (0, 10)))],
+            [sg.Button('Chegada', key='-io_chegada-', size=(10, 1), pad=((5, 5), (10, 10)))],
+            [sg.Button('Limpar', key='-io_limpar-', size=(10, 1), pad=((5, 5), (10, 10)))]
         ]
 
         # Output Line
@@ -215,15 +215,15 @@ class MainInterfaceLines:
             self._in_out_left_line,
             key='-column_saida_left-',
             background_color='#d1d1d1',
-            expand_x=True,
             pad=((5, 0), (0, 0))
         )
         self._in_out_right_column = sg.Column(
             self._in_out_right_line,
             key='-column_entrada_right-',
+            element_justification='center',
+            vertical_alignment='center',
             background_color='#d1d1d1',
-            expand_x=True,
-            pad=((0, 5), (0, 0))
+            pad=((63, 37), (0, 0))
         )
 
         # Output Column
@@ -246,7 +246,7 @@ class MainInterfaceLines:
         self._registration_frame = [
             sg.Frame(layout=[
                 [self._registration_left_column,
-                 sg.VerticalSeparator(pad=((2, 2), (10, 1))),
+                 sg.VerticalSeparator(pad=((2, 2), (10, 0))),
                  self._registration_right_column],
                 self._registration_buttons_line
             ], title='  CADASTRAR PACIENTE  ',
@@ -265,7 +265,7 @@ class MainInterfaceLines:
         self._find_frame = [
             sg.Frame(layout=[
                 [self._find_left_column,
-                 sg.VerticalSeparator(pad=(7, 5)),
+                 sg.VerticalSeparator(pad=((7, 7), (10, 0))),
                  self._find_right_column],
                 [self._find_buttons_column]
             ], title='  BUSCAR PACIENTE  ',
@@ -284,7 +284,7 @@ class MainInterfaceLines:
         self._in_out_frame = [
             sg.Frame(layout=[
                 [self._in_out_left_column,
-                 sg.VerticalSeparator(pad=(7, 5)),
+                 sg.VerticalSeparator(pad=((7, 5), (10, 20))),
                  self._in_out_right_column]
             ], title='  SAÍDA E ENTRADA DE PRONTUÁIOS  ',
                 key='-in_out_frame-',

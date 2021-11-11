@@ -3,15 +3,23 @@ import sqlite3
 # DB name: prontuarios.db
 # Table name: prontuarios
 
-# Columns --------------
-# id :type primary key
-# num_sus :type integer UNIQUE
-# nome :type text NOT NULL
-# sobrenome :type text DEFAULT NULL
-# data_saida :type text DEFAULT NULL
-# data_devolucao :type text DEFAULT NULL
-# data_ultima_internacao :type text DEFAULT NULL
-# is_devolvido :type integer but 0=False, 1=True DEFAULT=-1
+# Columns prontuarios Schema --------------
+# num_sus :type INTEGER PRIMARY KEY
+# nome_paciente :type TEXT NOT NULL
+# nome_mae :type TEXT DEFAULT NULL
+# sexo :type TEXT NOT NULL
+# dt_nasc :type TEXT NOT NULL
+# func_saida :type TEXT DEFAULT NULL
+# func_devolucao :type TEXT DEFAULT NULL
+# dtHr_saida :type TEXT DEFAULT NULL
+# dtHr_devolucao :type TEXT DEFAULT NULL
+# usuario TEXT :type DEFAULT NULL
+# is_devolvido :type INTEGER DEFAULT=-1, 0=False, 1=True
+
+# Columns usuarios Schema -----------------
+# id :type INTEGER PRIMARY KEY
+# usuario :type TEXT NOT NULL
+# senha :type TEXT NOT NULL
 
 # Constantes de controle
 N_DEVOLVIDO = 0
@@ -21,18 +29,23 @@ DEFAULT_VALUE = None
 
 class DBFunctions:
     """Classe do DB com todos os métodos necessários."""
+
     @staticmethod
-    def insert_prontuario(num_sus, nome, sobrenome=None):
+    def insert_prontuario(num_sus, nome_paciente, sexo, dt_nasc, usuario, nome_mae=None):
         """Cadastra novo prontuário."""
-        conn = sqlite3.connect('prontuarios.db')
+        conn = sqlite3.connect('arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('INSERT INTO prontuarios '
-                           '(num_sus, nome, sobrenome) '
-                           'VALUES (?, ?, ?)',
+                           '(num_sus, nome_paciente, nome_mae, sexo, dt_nasc, usuario) '
+                           'VALUES (?, ?, ?, ?, ?, ?)',
                            (int(num_sus),
-                            str(nome).lower(),
-                            str(sobrenome.lower())))
+                            str(nome_paciente).upper(),
+                            str(nome_mae).upper(),
+                            str(sexo).upper(),
+                            str(dt_nasc),
+                            str(usuario).upper()))
+            cursor.execute('pragma foreign_keys=ON')
             conn.commit()
         except sqlite3.IntegrityError:
             # Erro: Número do SUS já cadastrado
@@ -46,11 +59,11 @@ class DBFunctions:
     @staticmethod
     def select_sus(num_sus):
         """Busca prontuario pelo número do mesmo."""
-        conn = sqlite3.connect('prontuarios.db')
+        conn = sqlite3.connect('arquivo.db')
         try:
             cursor = conn.cursor()
-            cursor.execute('SELECT * FROM prontuarios WHERE num_sus=:num_sus',
-                           ({'num_sus': int(num_sus)}))
+            cursor.execute('SELECT * FROM prontuarios WHERE num_sus=?',
+                           (num_sus,))
             return cursor.fetchall()
         except sqlite3.Error as erro:
             print(f'ERRO: {erro}')
@@ -60,14 +73,14 @@ class DBFunctions:
             conn.close()
 
     @staticmethod
-    def select_nome(nome):
+    def select_nome(nome_paciente):
         """Busca prontuario com o nome do paciente."""
-        conn = sqlite3.connect('prontuarios.db')
+        conn = sqlite3.connect('arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM prontuarios '
-                           'WHERE nome_paciente=:nome_paciente',
-                           ({'nome_paciente': str(nome)}))
+                           'WHERE nome_paciente=?',
+                           (nome_paciente,))
             return cursor.fetchall()
         except sqlite3.Error as erro:
             print(f'ERRO: {erro}')
@@ -78,15 +91,14 @@ class DBFunctions:
             conn.close()
 
     @staticmethod
-    def select_sus_nome(num_sus, nome):
+    def select_sus_nome(num_sus, nome_paciente):
         """Busca mais precisa com número do prontuario e nome do paciente."""
-        conn = sqlite3.connect('prontuarios.db')
+        conn = sqlite3.connect('arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM prontuarios '
-                           'WHERE num_sus=:num_sus AND nome_paciente=:nome_paciente',
-                           ({'num_sus': int(num_sus),
-                             'nome_paciente': str(nome)}))
+                           'WHERE num_sus=? AND nome_paciente=?',
+                           (num_sus, nome_paciente))
             return cursor.fetchall()
         except sqlite3.Error as erro:
             print(f'ERRO: {erro}')
@@ -99,13 +111,13 @@ class DBFunctions:
     @staticmethod
     def select_devolvidos(num_sus=None):
         """Lista todos os prontuários devolvidos."""
-        conn = sqlite3.connect('prontuarios.db')
+        conn = sqlite3.connect('arquivo.db')
         try:
             cursor = conn.cursor()
             if num_sus == DEFAULT_VALUE:
                 cursor.execute('SELECT * FROM prontuarios '
                                'WHERE is_devolvido=?',
-                               ({'is_devolvido': DEVOLVIDO}))
+                               (DEVOLVIDO,))
             else:
                 DBFunctions.select_sus(num_sus)
         except sqlite3.Error as erro:
@@ -116,13 +128,13 @@ class DBFunctions:
     @staticmethod
     def select_nao_devolvidos(num_sus=None):
         """Lista todos os prontuários não devolvidos."""
-        conn = sqlite3.connect('prontuarios.db')
+        conn = sqlite3.connect('arquivo.db')
         try:
             if num_sus == DEFAULT_VALUE:
                 cursor = conn.cursor()
                 cursor.execute('SELECT * FROM prontuarios '
-                               'WHERE is_devolvido=:is_devolvido',
-                               ({'is_devolvido': N_DEVOLVIDO}))
+                               'WHERE is_devolvido=?',
+                               (N_DEVOLVIDO,))
             else:
                 DBFunctions.select_sus(num_sus)
         except sqlite3.Error as erro:
@@ -131,18 +143,17 @@ class DBFunctions:
             conn.close()
 
     @staticmethod
-    def update_saida(num_sus, data_saida):
+    def update_saida(num_sus, dt_hr_saida, usuario):
         """Cadastra saída do prontuario do arquivo."""
-        conn = sqlite3.connect('prontuarios.db')
+        conn = sqlite3.connect('arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('UPDATE prontuarios '
-                           'SET data_saida=:data_saida, '
-                           'is_devolvido=:is_devolvido '
-                           'WHERE num_sus=:num_sus',
-                           ({'data_saida': data_saida,
-                             'is_devolvido': N_DEVOLVIDO,
-                             'num_sus': num_sus}))
+                           'SET (dtHr_saida, is_devolvido, usuario)'
+                           'VALUES (?, ?, ?) '
+                           'WHERE num_sus=?',
+                           (dt_hr_saida, N_DEVOLVIDO, usuario, num_sus))
+            cursor.execute('pragma foreign_keys=ON')
             conn.commit()
         except sqlite3.Error as erro:
             print(f'ERRO: {erro}')
@@ -153,18 +164,17 @@ class DBFunctions:
             conn.close()
 
     @staticmethod
-    def update_entregue(num_sus, data_devolucao):
+    def update_entregue(num_sus, dt_hr_devolucao, usuario):
         """Cadastra devolução do prontuário no arquivo."""
-        conn = sqlite3.connect('prontuarios.db')
+        conn = sqlite3.connect('arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('UPDATE prontuarios '
-                           'SET data_devolucao=:data_devolucao, '
-                           'is_devolvido=:devolvido '
-                           'WHERE num_sus=:num_sus',
-                           ({'data_devolucao': data_devolucao,
-                             'devolvido': DEVOLVIDO,
-                             'num_sus': int(num_sus)}))
+                           'SET (dt_devolucao, is_devolvido, usuario)'
+                           'VALUES (?, ?, ?) '
+                           'WHERE num_sus=?',
+                           (dt_hr_devolucao, DEVOLVIDO, usuario, num_sus))
+            cursor.execute('pragma foreign_keys=ON')
             conn.commit()
         except sqlite3.Error as erro:
             print(f'ERRO: {erro}')
@@ -177,12 +187,13 @@ class DBFunctions:
     @staticmethod
     def delete_prontuario(num_sus):
         """Deleta prontuarios."""
-        conn = sqlite3.connect('prontuarios.db')
+        conn = sqlite3.connect('arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('DELETE FROM prontuarios '
-                           'WHERE num_sus=:num_sus',
-                           ({'num_sus': num_sus}))
+                           'WHERE num_sus=?',
+                           (num_sus,))
+            cursor.execute('pragma foreign_keys=ON')
             conn.commit()
         except sqlite3.Error as erro:
             print(f'ERRO: {erro}')
@@ -192,7 +203,7 @@ class DBFunctions:
     @staticmethod
     def select_all():
         """Lista todos os já cadastrados do DB."""
-        conn = sqlite3.connect('prontuarios.db')
+        conn = sqlite3.connect('arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM prontuarios')
@@ -204,7 +215,63 @@ class DBFunctions:
 
 
 if __name__ == '__main__':
-    pass
+    conn = sqlite3.connect('arquivo.db')
+    cursor = conn.cursor()
+    try:
+        # cursor.execute('INSERT INTO prontuarios (num_sus, nome_paciente, sexo, dt_nasc, usuario) '
+        #                'VALUES (?, ?, ?, ?, ?)',
+        #                (123456789123456, 'Fulano Teste da Silva', 'M', '2010-08-01', 1))
+        # conn.commit()
+        # cursor.execute('DROP TABLE IF EXISTS prontuarios')
+        cursor.execute('CREATE TABLE IF NOT EXISTS prontuarios ('
+                       'num_sus INTEGER PRIMARY KEY,'
+                       'nome_paciente TEXT NOT NULL,'
+                       'nome_mae TEXT DEFAULT NULL,'
+                       'sexo TEXT NOT NULL,'
+                       'dt_nasc TEXT NOT NULL,'
+                       'func_saida TEXT DEFAULT NULL,'
+                       'func_devolucao TEXT DEFAULT NULL,'
+                       'dtHr_saida TEXT DEFAULT NULL,'
+                       'dtHr_devolucao TEXT DEFAULT NULL,'
+                       'usuario INTEGER NOT NULL,'
+                       'is_devolvido INTEGER DEFAULT -1,'
+                       'FOREIGN KEY (usuario) REFERENCES usuarios(id_usuario))'
+                       ' WITHOUT ROWID;')
+        cursor.execute('pragma foreign_keys=ON')
+        # cursor.execute('INSERT INTO prontuarios (num_sus, nome_paciente, sexo, dt_nasc, usuario) '
+        #                'VALUES (?, ?, ?, ?, ?)',
+        #                (123456789123458, 'Teste de Souza', 'M', '2010-08-01', 1))
+        # conn.commit()
+        cursor.execute('SELECT * FROM prontuarios')
+        print(cursor.fetchall())
+    except sqlite3.Error as e:
+        print(e)
+
+    # conn = sqlite3.connect('arquivo.db')
+    # cursor = conn.cursor()
+    # try:
+    #     cursor.execute('CREATE TABLE IF NOT EXISTS usuarios ('
+    #                    'id_usuario INTEGER PRIMARY KEY,'
+    #                    'usuario TEXT NOT NULL UNIQUE,'
+    #                    'senha TEXT NOT NULL);')
+    #     cursor.execute('pragma foreign_keys=ON')
+    #     cursor.execute('CREATE TABLE IF NOT EXISTS prontuarios ('
+    #                    'num_sus INTEGER PRIMARY KEY,'
+    #                    'nome_paciente TEXT NOT NULL,'
+    #                    'nome_mae TEXT DEFAULT NULL,'
+    #                    'sexo TEXT NOT NULL,'
+    #                    'dt_nasc TEXT NOT NULL,'
+    #                    'func_saida TEXT DEFAULT NULL,'
+    #                    'func_devolucao TEXT DEFAULT NULL,'
+    #                    'dtHr_saida TEXT DEFAULT NULL,'
+    #                    'dtHr_devolucao TEXT DEFAULT NULL,'
+    #                    'usuario TEXT DEFAULT NULL,'
+    #                    'is_devolvido INTEGER DEFAULT -1,'
+    #                    'FOREIGN KEY (usuario) REFERENCES usuarios(id_usuario))'
+    #                    ' WITHOUT ROWID;')
+    # except sqlite3.Error as e:
+    #     print(e)
+
     # iniciar = DBFunctions()
     # iniciar.delete_prontuario(456)
 
@@ -216,29 +283,33 @@ if __name__ == '__main__':
 
     # iniciar.insert_prontuario(123456789987654, 'João', 'Breno')
 
-    # conn = sqlite3.connect('prontuarios.db')
+    # conn = sqlite3.connect('arquivo.db')
     # cursor = conn.cursor()
     # cursor.execute('SELECT * FROM prontuarios WHERE nome=:nome', ({'nome': 'laura'}))
     # print(len(cursor.fetchall()))
 
-    # conn = sqlite3.connect('prontuarios.db')
+    # conn = sqlite3.connect('arquivo.db')
     # cursor = conn.cursor()
     # try:
     #     cursor.execute('CREATE TABLE prontuarios ('
-    #                    'id INTEGER PRIMARY KEY,'
-    #                    'num_sus INTEGER NOT NULL UNIQUE,'
-    #                    'nome TEXT NOT NULL,'
-    #                    'sobrenome TEXT DEFAULT NULL,'
-    #                    'data_saida TEXT DEFAULT NULL,'
-    #                    'data_devolucao TEXT DEFAULT NULL,'
-    #                    'data_internacao_paciente text NULL,'
-    #                    'is_devolvido INTEGER DEFAULT -1)')
+    #                    'num_sus INTEGER PRIMARY KEY,'
+    #                    'nome_paciente TEXT NOT NULL,'
+    #                    'nome_mae TEXT DEFAULT NULL,'
+    #                    'sexo TEXT NOT NULL,'
+    #                    'dt_nasc TEXT NOT NULL,'
+    #                    'func_saida TEXT DEFAULT NULL,'
+    #                    'func_devolucao TEXT DEFAULT NULL,'
+    #                    'dtHr_saida TEXT DEFAULT NULL,'
+    #                    'dtHr_devolucao TEXT DEFAULT NULL,'
+    #                    'usuario TEXT DEFAULT NULL,'
+    #                    'is_devolvido INTEGER DEFAULT -1)'
+    #                    'WITHOUT ROWID;')
     # except sqlite3.Error as e:
     #     print(f'ERRO: {e}')
     # finally:
     #     conn.close()
 
-    # conn = sqlite3.connect('prontuarios.db')
+    # conn = sqlite3.connect('arquivo.db')
     # cursor = conn.cursor()
     # try:
     #     cursor.execute('DROP TABLE IF EXISTS prontuarios')
@@ -246,13 +317,3 @@ if __name__ == '__main__':
     #     print(f'ERRO: {e}')
     # finally:
     #     conn.close()
-
-# 'CREATE TABLE prontuarios ('
-# 'id INTEGER PRIMARY KEY,'
-# 'num_sus INTEGER UNIQUE,'
-# 'nome TEXT NOT NULL,'
-# 'sobrenome TEXT DEFAULT "",'
-# 'data_saida TEXT DEFAULT "",'
-# 'data_devolucao TEXT DEFAULT "",'
-# 'data_internacao_paciente text "",'
-# 'is_devolvido INTEGER DEFAULT -1)'

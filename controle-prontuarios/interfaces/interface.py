@@ -4,7 +4,7 @@ from main_interface_lines import MainInterfaceLines
 
 
 class Interface(LoginInterfaceLines, MainInterfaceLines):
-    """Faz a tela principal."""
+    """Monta todas as telas."""
 
     def __init__(self):
         LoginInterfaceLines.__init__(self)
@@ -74,7 +74,6 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
                  ]
             ], key='-tab_group-',
                 expand_x=True,
-                visible=False,
                 pad=(0, 0),
                 selected_title_color='#000000',
                 selected_background_color='#d1d1d1',
@@ -99,7 +98,7 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
         self.__main_events, self.__main_values = self._main_window.Read()
 
     # Update Methods --------------------------------------------------------------------------------------------------
-
+    
 
 if __name__ == '__main__':
     start = Interface()
