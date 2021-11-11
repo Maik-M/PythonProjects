@@ -98,7 +98,7 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
         self.__main_events, self.__main_values = self._main_window.Read()
 
     # Update Methods --------------------------------------------------------------------------------------------------
-    
+
 
 if __name__ == '__main__':
     start = Interface()
