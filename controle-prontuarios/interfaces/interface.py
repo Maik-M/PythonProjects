@@ -2,6 +2,41 @@ import PySimpleGUI as sg
 from login_interface_lines import LoginInterfaceLines
 from main_interface_lines import MainInterfaceLines
 
+# Keys -----------------------------------------------------------------------------------------------------------------
+R_INPUT_NOME = '-r_nome-'
+R_INPUT_SUS = '-r_sus-'
+R_INPUT_MAE = '-r_nome_mae-'
+R_INPUT_SEXO = 'SEXO'
+R_INPUT_NASC_DIA = '-r_nascimento_dia-'
+R_INPUT_NASC_MES = '-r_nascimento_mes-'
+R_INPUT_NASC_ANO = '-r_nascimento_ano-'
+R_BUTTON_CADASTRAR = '-r_button_cadastrar-'
+R_BUTTON_LIMPAR = '-r_button_limpar-'
+
+F_INPUT_SUS = '-f_sus-'
+F_INPUT_NOME = '-f_nome-'
+F_INPUT_NASC_DIA = '-f_nascimento_dia-'
+F_INPUT_NASC_MES = '-f_nascimento_mes-'
+F_INPUT_NASC_ANO = '-f_nascimento_ano-'
+F_BUTTON_BUSCAR = '-f_button_buscar-'
+F_BUTTON_LIMPAR = '-f_button_limpar-'
+
+IO_INPUT_SUS = '-io_sus-'
+IO_INPUT_FUNCIONARIO = '-io_funcionario-'
+IO_INPUT_DIA = '-io_dia-'
+IO_INPUT_MES = '-io_mes-'
+IO_INPUT_ANO = '-io_ano-'
+IO_INPUT_HORA = '-io_hora-'
+IO_BUTTON_SAIDA = '-io_saida-'
+IO_BUTTON_CHEGADA = '-io_chegada-'
+IO_BUTTON_LIMPAR = '-io_limpar-'
+
+OUTPUT_BOARD = '-board-'
+BOARD_BUTTON_DELETAR = '-b_button_deletar-'
+BOARD_BUTTON_EDITAR = '-b_button_editar-'
+BOARD_BUTTON_LIMPAR = '-b_button_limpar-'
+# ----------------------------------------------------------------------------------------------------------------------
+
 
 class Interface(LoginInterfaceLines, MainInterfaceLines):
     """Monta todas as telas."""
@@ -57,7 +92,6 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
                                        background_color='#dcdcdc',
                                        use_default_focus=False,
                                        finalize=True)
-        LoginInterfaceLines.fix_doted_line()
 
     def make_main_window(self):
         self._main_layout = [
@@ -88,7 +122,6 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
                                       background_color='#dcdcdc',
                                       use_default_focus=False,
                                       finalize=True)
-        MainInterfaceLines.fix_doted_line()
 
     # Input Values and Events ------------------------------------------------------------------------------------------
     def input_login_values(self):
@@ -98,6 +131,8 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
         self.__main_events, self.__main_values = self._main_window.Read()
 
     # Update Methods --------------------------------------------------------------------------------------------------
+    def update_main_window(self):
+        pass
 
 
 if __name__ == '__main__':
@@ -109,5 +144,7 @@ if __name__ == '__main__':
         start.make_main_window()
         while True:
             start.input_main_values()
+            if start.main_events == R_BUTTON_CADASTRAR:
+                print(start.main_values)
             if start.main_events == sg.WINDOW_CLOSED:
                 break

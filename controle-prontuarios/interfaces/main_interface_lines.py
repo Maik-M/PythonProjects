@@ -139,7 +139,7 @@ class MainInterfaceLines:
                      text_color='#00345B',
                      background_color='#d1d1d1',
                      pad=(5, 0))],
-            [sg.Input(key='-io_horas-', size=(5, 2),
+            [sg.Input(key='-io_hora-', size=(5, 2),
                       pad=((5, 5), (0, 5)))]
         ]
         self._in_out_right_line = [
@@ -148,7 +148,7 @@ class MainInterfaceLines:
             [sg.Button('Limpar', key='-io_limpar-', size=(10, 1), pad=((5, 5), (10, 10)))]
         ]
 
-        # Output Line
+        # Board Line
         self._board_line = [
             [sg.Text('PAINEL',
                      font=('Arial Black', 10),
