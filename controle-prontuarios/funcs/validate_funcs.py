@@ -7,7 +7,7 @@ NOME_REGEX = compile(r'[a-z A-Z]{5,80}$')
 SEXO_REGEX = compile(r'[MF]$')
 DATA_REGEX = compile(r'(([1]|[2])([0-9]{3}))-(([0][1-9])|([1][0-2]))-(([0][1-9])|([1-2][0-9])|([3][0-1]))$')
 HORA_REGEX = compile(r'(([0][0-9])|([1][0-9])|([2][1-3])):([0-5][0-9])$')
-FUNCIONARIO_REGEX = compile(r'[a-zA-Z]{2,15}')
+FUNCIONARIO_REGEX = compile(r'[a-zA-Z]{2,15}$')
 
 # Error messagens ------------------------------------------------------------------------------------------------------
 SUS_ERROR = ValueError('ERRO: O nome do paciente deve conter de 5 à 80 letras e não deve conter números!')
@@ -21,10 +21,14 @@ DATA_MENOR_ERROR = ValueError('ERRO: Data de chegada pode ser anterior a data de
 FUNCIONARIO_ERROR = ValueError('ERRO: Nome do funcionário não informado ou inválido!')
 HORA_ERROR = ValueError('ERRO: Hora não informada ou inválida!')
 HORA_MENOR_ERROR = ValueError('ERRO: Datas iguais! Nesse caso, a hora da chegada não pode ser menor que a da saída!')
+DEVOLVIDO_ERROR = ValueError('ERRO: Prontuário já foi devolvido! Verifique o número do SUS.')
+NAO_DEVOLVIDO_ERROR = ValueError('ERRO: Esse prontuário ainda não foi devolvido! Verifiquei o número do SUS.')
+SEM_MOVIMENTO_ERROR = ValueError('ERRO: Prontuário ainda sem movimentação!')
 
 
 # Functions ------------------------------------------------------------------------------------------------------------
 def validate_register(num_sus, nome_paciente, sexo, dt_nasc, nome_mae=''):
+    """Valida os dados para o registro do prontuário."""
     if not match(SUS_REGEX, num_sus):
         raise SUS_ERROR
     if not match(NOME_REGEX, nome_paciente):
@@ -40,6 +44,7 @@ def validate_register(num_sus, nome_paciente, sexo, dt_nasc, nome_mae=''):
 
 
 def validate_find(num_sus='', nome_paciente='', dt_nasc=''):
+    """Valida os dados para a pesquisa do prontuário."""
     if (num_sus == '') and (nome_paciente == '') and (dt_nasc == ''):
         raise ValueError('ERRO: Nenhum dado informado para a busca!')
     else:
@@ -56,6 +61,7 @@ def validate_find(num_sus='', nome_paciente='', dt_nasc=''):
 
 
 def validate_out(num_sus, nome_funcionario, dt_saida, hr_saida):
+    """Valida a saída do prontuário."""
     if not match(SUS_REGEX, num_sus):
         raise SUS_ERROR
     if not match(FUNCIONARIO_REGEX, nome_funcionario):
@@ -68,16 +74,16 @@ def validate_out(num_sus, nome_funcionario, dt_saida, hr_saida):
 
 
 def validate_in(num_sus, nome_funcionario, dt_saida, hr_saida, dt_chegada, hr_chegada):
+    """Valida a volta do prontuário."""
     date_saida = datetime.strptime(dt_saida, '%Y-%m-%d')
     date_chegada = datetime.strptime(dt_chegada, '%Y-%m-%d')
     hora_saida = datetime.strptime(hr_saida, '%H:%M')
     hora_chegada = datetime.strptime(hr_chegada, '%H:%M')
-
     if not match(SUS_REGEX, num_sus):
         raise SUS_ERROR
     if not match(FUNCIONARIO_REGEX, nome_funcionario):
         raise FUNCIONARIO_ERROR
-
+    # Verifica data se não é menor que a data de saida
     if not match(DATA_REGEX, dt_chegada):
         raise DATA_ERROR
     elif not match(HORA_REGEX, hr_chegada):
@@ -91,8 +97,29 @@ def validate_in(num_sus, nome_funcionario, dt_saida, hr_saida, dt_chegada, hr_ch
     return 1
 
 
+def validate_chegada(is_devolvido):
+    """Verifica se prontuário está fora do arquivo antes de registrar chegada."""
+    if is_devolvido:
+        raise DEVOLVIDO_ERROR
+    return 1
+
+
+def validate_saida(is_devolvido):
+    """Verifica de prontuário no arquivo antes de registrar saída."""
+    if not is_devolvido:
+        raise NAO_DEVOLVIDO_ERROR
+    return 1
+
+
+def movimentacao(is_devolvido):
+    """Verifica se prontuário possui movimentação."""
+    if is_devolvido == -1:
+        raise SEM_MOVIMENTO_ERROR
+    return 1
+
+
 if __name__ == '__main__':
     try:
-        print(validate_in('123456789123456', 'Ana Carolina', '2021-01-01', '13:56', '2020-01-02', '13:54'))
+        print(validate_saida(0))
     except ValueError as e:
         print(e)
