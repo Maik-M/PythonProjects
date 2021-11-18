@@ -1,15 +1,22 @@
 from re import compile, match
 from datetime import datetime
 
+
 # Regex ----------------------------------------------------------------------------------------------------------------
+USUARIO_REGEX = compile(r'[a-zA-Z0-9-_.]{4,10}$')
+SENHA_REGEX = compile(r'[a-z A-Z0-9-_@#*]{5,12}$')
 SUS_REGEX = compile(r'[^a-zA-Z]{15}$')
-NOME_REGEX = compile(r'[a-z A-Z]{5,80}$')
+NOME_REGEX = compile(r'[a-zA-Zà-úÀ-Ú ]{5,80}$')
 SEXO_REGEX = compile(r'[MF]$')
 DATA_REGEX = compile(r'(([1]|[2])([0-9]{3}))-(([0][1-9])|([1][0-2]))-(([0][1-9])|([1-2][0-9])|([3][0-1]))$')
 HORA_REGEX = compile(r'(([0][0-9])|([1][0-9])|([2][1-3])):([0-5][0-9])$')
 FUNCIONARIO_REGEX = compile(r'[a-zA-Z]{2,15}$')
 
+
 # Error messagens ------------------------------------------------------------------------------------------------------
+USUARIO_ERROR = ValueError('ERRO: O usuário pode conter: Lestrar, Números, "-", "_", ".", não aceita espaço e '
+                           'deve conter de 4 à 10 caractéres!')
+SENHA_ERROR = ValueError('ERRO: A senha deve conter de 5 à 12 caractéres!')
 SUS_ERROR = ValueError('ERRO: O nome do paciente deve conter de 5 à 80 letras e não deve conter números!')
 NOME_ERROR = ValueError('ERRO: O nome do paciente deve conter de 5 à 80 letras e não deve conter números!')
 MAE_ERROR = ValueError('ERRO: Nome da mãe não é obrigatório, mas caso for preenchido,'
@@ -120,6 +127,6 @@ def movimentacao(is_devolvido):
 
 if __name__ == '__main__':
     try:
-        print(validate_saida(0))
+        print()
     except ValueError as e:
         print(e)
