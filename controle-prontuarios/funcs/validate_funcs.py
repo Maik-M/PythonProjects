@@ -1,8 +1,15 @@
+import password_funcs as pf
 from re import compile, match
 from datetime import datetime
+from db.db_functions import DBFunctions as db
 
+########################################################################################################################
+# AQUI ESTÃO AS FUNÇÕES PARA VALIDAÇÕES DE DADOS DE ENTRADA DE USUÁRIOS E PRONTUÁRIOS ##################################
+########################################################################################################################
 
-# Regex ----------------------------------------------------------------------------------------------------------------
+###################
+# Regex ###########
+###################
 USUARIO_REGEX = compile(r'[a-zA-Z0-9-_.]{4,10}$')
 SENHA_REGEX = compile(r'[a-z A-Z0-9-_@#*]{5,12}$')
 SUS_REGEX = compile(r'[^a-zA-Z]{15}$')
@@ -13,10 +20,14 @@ HORA_REGEX = compile(r'(([0][0-9])|([1][0-9])|([2][1-3])):([0-5][0-9])$')
 FUNCIONARIO_REGEX = compile(r'[a-zA-Z]{2,15}$')
 
 
-# Error messagens ------------------------------------------------------------------------------------------------------
+###################
+# Error ###########
+###################
 USUARIO_ERROR = ValueError('ERRO: O usuário pode conter: Lestrar, Números, "-", "_", ".", não aceita espaço e '
                            'deve conter de 4 à 10 caractéres!')
 SENHA_ERROR = ValueError('ERRO: A senha deve conter de 5 à 12 caractéres!')
+USUARIO_INVALIDO_ERROR = ValueError('ERRO: Usuário ou senha inválidos! Tente novamente.')
+USUARIO_EXISTENTE_ERROR = ValueError('ERRO: Usuário já cadastrado!')
 SUS_ERROR = ValueError('ERRO: O nome do paciente deve conter de 5 à 80 letras e não deve conter números!')
 NOME_ERROR = ValueError('ERRO: O nome do paciente deve conter de 5 à 80 letras e não deve conter números!')
 MAE_ERROR = ValueError('ERRO: Nome da mãe não é obrigatório, mas caso for preenchido,'
@@ -33,7 +44,33 @@ NAO_DEVOLVIDO_ERROR = ValueError('ERRO: Esse prontuário ainda não foi devolvid
 SEM_MOVIMENTO_ERROR = ValueError('ERRO: Prontuário ainda sem movimentação!')
 
 
-# Functions ------------------------------------------------------------------------------------------------------------
+###################
+# Functions #######
+###################
+# Usuários -----------------------------------
+def validate_register_usuario(usuario, senha):
+    if not match(USUARIO_REGEX, usuario):
+        raise USUARIO_ERROR
+    if not match(SENHA_REGEX, senha):
+        raise SENHA_ERROR
+    if db.select_usuario(usuario):
+        raise USUARIO_EXISTENTE_ERROR
+    return 1
+
+
+def validate_login_usuario(usuario_digitado, senha_digitada):
+    """Validação de usuário para login no sistema."""
+    usuario = db.select_usuario(usuario_digitado)
+    senha_db = usuario[2]
+    salt = usuario[3]
+    hash_senha_digitada = pf.hashing_validate_password(senha_digitada, salt)
+    if hash_senha_digitada == senha_db:
+        return 1
+    else:
+        raise USUARIO_INVALIDO_ERROR
+
+
+# Prontuários ------------------------------------------------------------
 def validate_register(num_sus, nome_paciente, sexo, dt_nasc, nome_mae=''):
     """Valida os dados para o registro do prontuário."""
     if not match(SUS_REGEX, num_sus):
@@ -127,6 +164,6 @@ def movimentacao(is_devolvido):
 
 if __name__ == '__main__':
     try:
-        print()
+        print(validate_register_usuario('Maik4521', 'A1515151sss'))
     except ValueError as e:
         print(e)
