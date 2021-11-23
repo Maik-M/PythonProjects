@@ -51,7 +51,7 @@ class LoginInterfaceLines:
                      background_color='#dcdcdc',
                      pad=((0, 2), (5, 5))),
              sg.Button('Cadastrar',
-                       key='-new_user-',
+                       key='-cadastrar-',
                        border_width=0,
                        font=('Arial Black', 7),
                        button_color=('#00345b', '#dcdcdc'),

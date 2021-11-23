@@ -34,7 +34,9 @@ DEFAULT_VALUE = None
 class DBFunctions:
     """Classe do DB com todos os métodos necessários."""
 
-    # Prontuários ------------------------------------------------------------------------------------------------------
+    ###################
+    # Prontuários #####-------------------------------------------------------------------------------------------------
+    ###################
     @staticmethod
     def create_table_prontuarios():
         conn = sqlite3.connect('../db/arquivo.db')
@@ -77,6 +79,7 @@ class DBFunctions:
                             str(dt_nasc),
                             str(usuario).upper()))
             conn.commit()
+            return 1
         except sqlite3.IntegrityError:
             raise sqlite3.IntegrityError('ERRO: Algo de errado aconteceu! '
                                          'Verifique se o prontuário já está '
@@ -242,10 +245,13 @@ class DBFunctions:
         finally:
             conn.close()
 
-    # Usuários ---------------------------------------------------------------------------------------------------------
+    ###################
+    # Usuários ########-------------------------------------------------------------------------------------------------
+    ###################
     @staticmethod
     def create_table_usuarios():
-        conn = sqlite3.connect('../db/arquivo.db')
+        """Cria tabela usuarios de não existir."""
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('pragma foreign_keys=ON')
@@ -262,8 +268,9 @@ class DBFunctions:
 
     @staticmethod
     def resgister_usuario(nome_usuario, usuario, senha):
+        """Cadastra novo usuário."""
         hash_senha, salt = hashing.hashing_password(senha)
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             DBFunctions.create_table_usuarios()
             cursor = conn.cursor()
@@ -284,13 +291,14 @@ class DBFunctions:
 
     @staticmethod
     def delete_usuario(usuario):
-        conn = sqlite3.connect('../db/arquivo.db')
+        """Deleta usuário criado (só o adm pode fazer isso)."""
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('pragma foreign_keys=ON')
             cursor.execute('DELETE FROM usuarios '
                            'WHERE usuario=?',
-                           (str(usuario,)))
+                           (str(usuario, )))
         except sqlite3.Error as BD_Error:
             raise BD_Error
         finally:
@@ -298,13 +306,14 @@ class DBFunctions:
 
     @staticmethod
     def select_usuario(usuario):
-        conn = sqlite3.connect('../db/arquivo.db')
+        """Retorna os dados do usuário passado."""
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('pragma foreign_keys=ON')
             cursor.execute('SELECT * FROM usuarios '
                            'WHERE usuario=?',
-                           (str(usuario,)))
+                           (str(usuario),))
             return cursor.fetchone()
         except sqlite3.Error as BD_Error:
             raise BD_Error
@@ -313,7 +322,8 @@ class DBFunctions:
 
     @staticmethod
     def select_all_usuarios():
-        conn = sqlite3.connect('../db/arquivo.db')
+        """Retorna lista de todos usuários cadastradaos (só o adm tem acesso)."""
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('pragma foreign_keys=ON')
@@ -371,5 +381,5 @@ if __name__ == '__main__':
     # conn.commit()
     #     cursor.execute('SELECT * FROM usuarios')
     #     print(cursor.fetchall())
-    # except sqlite3.Error as e:
+    # except sqlite3.ErrorPopup as e:
     #     print(e)

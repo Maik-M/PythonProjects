@@ -1,41 +1,12 @@
 import PySimpleGUI as sg
-from login_interface_lines import LoginInterfaceLines
-from main_interface_lines import MainInterfaceLines
+from interfaces.consts import Keys
+from interfaces.login_interface_lines import LoginInterfaceLines
+from interfaces.main_interface_lines import MainInterfaceLines
 
-# Keys -----------------------------------------------------------------------------------------------------------------
-R_INPUT_NOME = '-r_nome-'
-R_INPUT_SUS = '-r_sus-'
-R_INPUT_MAE = '-r_nome_mae-'
-R_INPUT_SEXO = 'SEXO'
-R_INPUT_NASC_DIA = '-r_nascimento_dia-'
-R_INPUT_NASC_MES = '-r_nascimento_mes-'
-R_INPUT_NASC_ANO = '-r_nascimento_ano-'
-R_BUTTON_CADASTRAR = '-r_button_cadastrar-'
-R_BUTTON_LIMPAR = '-r_button_limpar-'
 
-F_INPUT_SUS = '-f_sus-'
-F_INPUT_NOME = '-f_nome-'
-F_INPUT_NASC_DIA = '-f_nascimento_dia-'
-F_INPUT_NASC_MES = '-f_nascimento_mes-'
-F_INPUT_NASC_ANO = '-f_nascimento_ano-'
-F_BUTTON_BUSCAR = '-f_button_buscar-'
-F_BUTTON_LIMPAR = '-f_button_limpar-'
-
-IO_INPUT_SUS = '-io_sus-'
-IO_INPUT_FUNCIONARIO = '-io_funcionario-'
-IO_INPUT_DIA = '-io_dia-'
-IO_INPUT_MES = '-io_mes-'
-IO_INPUT_ANO = '-io_ano-'
-IO_INPUT_HORA = '-io_hora-'
-IO_BUTTON_SAIDA = '-io_saida-'
-IO_BUTTON_CHEGADA = '-io_chegada-'
-IO_BUTTON_LIMPAR = '-io_limpar-'
-
-OUTPUT_BOARD = '-board-'
-BOARD_BUTTON_DELETAR = '-b_button_deletar-'
-BOARD_BUTTON_EDITAR = '-b_button_editar-'
-BOARD_BUTTON_LIMPAR = '-b_button_limpar-'
-# ----------------------------------------------------------------------------------------------------------------------
+##################
+# Class ########## -----------------------------------------------------------------------------------------------------
+##################
 
 
 class Interface(LoginInterfaceLines, MainInterfaceLines):
@@ -51,7 +22,10 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
         self.__main_events = None
         self.__main_values = None
 
-    # Getters ----------------------------------------------------------------------------------------------------------
+    ###################
+    # Getters ######### ------------------------------------------------------------------------------------------------
+    ###################
+
     @property
     def login_events(self):
         return self.__login_events
@@ -68,8 +42,12 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
     def main_values(self):
         return self.__main_values
 
-    # Windows ----------------------------------------------------------------------------------------------------------
+    ###################
+    # Windows ######### ------------------------------------------------------------------------------------------------
+    ###################
+
     def make_login_window(self):
+        """Faz a tela de login."""
         self._login_layout = [
             [sg.Frame(layout=[
                 [self._greetings_login_column],
@@ -90,10 +68,10 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
                                        self._login_layout,
                                        size=(600, 400),
                                        background_color='#dcdcdc',
-                                       use_default_focus=False,
                                        finalize=True)
 
     def make_main_window(self):
+        """Faz a tela principal."""
         self._main_layout = [
             [sg.TabGroup(layout=[
                 [sg.Tab(title='Cadastrar', key='-tab_cadastro-', layout=[
@@ -109,6 +87,7 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
             ], key='-tab_group-',
                 expand_x=True,
                 pad=(0, 0),
+                focus_color='#d1d1d1',
                 selected_title_color='#000000',
                 selected_background_color='#d1d1d1',
                 background_color='#dcdcdc',
@@ -120,18 +99,60 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
                                       self._main_layout,
                                       size=(600, 400),
                                       background_color='#dcdcdc',
-                                      use_default_focus=False,
                                       finalize=True)
 
-    # Input Values and Events ------------------------------------------------------------------------------------------
+    @staticmethod
+    def make_popup(msg):
+        return sg.PopupOK(msg, font=('Arial Black', 12), background_color='#f9f9f9', text_color='#00345B',
+                          button_color='#ff5858', line_width=27, no_titlebar=True)
+
+    @staticmethod
+    def make_error_popup(error):
+        return sg.PopupOK(error, font=('Arial Black', 12), background_color='#f9f9f9', text_color='#ff5858',
+                          button_color='#ff5858', line_width=27, no_titlebar=True)
+
+
+    ###########################
+    # Input Values and Events # ----------------------------------------------------------------------------------------
+    ###########################
+
     def input_login_values(self):
+        """Recebe os valores de input do login."""
         self.__login_events, self.__login_values = self._login_window.Read()
 
     def input_main_values(self):
+        """Recebe os valores de input da tela principal."""
         self.__main_events, self.__main_values = self._main_window.Read()
 
-    # Update Methods --------------------------------------------------------------------------------------------------
+    ###########################
+    # Return Values Methods ### ----------------------------------------------------------------------------------------
+    ###########################
+
+    def return_reg(self):
+        """Retorna valores da aba registro."""
+        sus = str(self.main_values[Keys.R_INPUT_SUS])
+        nome = str(self.main_values[Keys.R_INPUT_NOME])
+        sexo = str(self.main_values[Keys.R_INPUT_SEXO_F] if not self.main_values[Keys.R_INPUT_SEXO_M] else self.main_values[Keys.R_INPUT_SEXO_M])
+        dt_nasc = str(self.return_formated_nasc())
+        mae = str(self.main_values[Keys.R_INPUT_MAE])
+        return sus, nome, sexo, dt_nasc, mae
+
+    def return_formated_nasc(self):
+        """Retorna a data formatada."""
+        mes_dic = {'Jan': '01', 'Fev': '02', 'Mar': '03', 'Abr': '04', 'Mai': '05', 'Jun': '06',
+                    'Jul': '07', 'Ago': '08', 'Set': '09', 'Out': '10', 'Nov': '11', 'Dez': '12'}
+        ano = self.main_values[Keys.R_INPUT_NASC_ANO]
+        mes = mes_dic[self.main_values[Keys.R_INPUT_NASC_MES]]
+        dia = self.main_values[Keys.R_INPUT_NASC_DIA]
+        dt_nasc = str(f'{ano}-{mes}-{dia}')
+        return dt_nasc
+
+    ##################
+    # Update Methods # -------------------------------------------------------------------------------------------------
+    ##################
+
     def update_main_window(self):
+        """Atualiza as valores da tela principal."""
         pass
 
 
@@ -144,7 +165,3 @@ if __name__ == '__main__':
         start.make_main_window()
         while True:
             start.input_main_values()
-            if start.main_events == R_BUTTON_CADASTRAR:
-                print(start.main_values)
-            if start.main_events == sg.WINDOW_CLOSED:
-                break

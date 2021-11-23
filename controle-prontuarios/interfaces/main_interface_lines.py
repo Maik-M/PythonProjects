@@ -13,8 +13,8 @@ class MainInterfaceLines:
         # Elements Lines -----------------------------------------------------------------------------------------------
         # Var
         days = ([i for i in range(1, 32)])
-        mounths = ({'Jan': 1, 'Fev': 2, 'Mar': 3, 'Abr': 4, 'Mai': 5, 'Jun': 6,
-                    'Jul': 7, 'Ago': 8, 'Set': 9, 'Out': 10, 'Nov': 11, 'Dez': 12})
+        mounths = ('Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+                    'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez')
         years = [int(year) for year in range(date.today().year, date.today().year - 150, -1)]
 
         # Lines --------------------------------------------------------------------------------------------------------
