@@ -39,7 +39,7 @@ class DBFunctions:
     ###################
     @staticmethod
     def create_table_prontuarios():
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('CREATE TABLE IF NOT EXISTS prontuarios ('
@@ -54,7 +54,7 @@ class DBFunctions:
                            'dtHr_devolucao TEXT DEFAULT NULL,'
                            'usuario INTEGER NOT NULL,'
                            'is_devolvido INTEGER DEFAULT -1,'
-                           'FOREIGN KEY (usuario) REFERENCES usuarios(id_usuario))'
+                           'FOREIGN KEY (usuario) REFERENCES usuarios (usuario_id))'
                            ' WITHOUT ROWID;')
         except sqlite3.Error as BD_Error:
             raise BD_Error
@@ -64,7 +64,7 @@ class DBFunctions:
     @staticmethod
     def insert_prontuario(num_sus, nome_paciente, sexo, dt_nasc, usuario, nome_mae=None):
         """Cadastra novo prontuário."""
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             DBFunctions.create_table_prontuarios()
             cursor = conn.cursor()
@@ -77,13 +77,11 @@ class DBFunctions:
                             str(nome_mae).upper(),
                             str(sexo).upper(),
                             str(dt_nasc),
-                            str(usuario).upper()))
+                            int(usuario)))
             conn.commit()
-            return 1
         except sqlite3.IntegrityError:
-            raise sqlite3.IntegrityError('ERRO: Algo de errado aconteceu! '
-                                         'Verifique se o prontuário já está '
-                                         'cadastrado ou se algum dado está faltando.')
+            raise sqlite3.IntegrityError(19*' '+'ERRO!\nAlgo de errado aconteceu!\n'
+                                         'Verifique se o prontuário já está cadastrado ou se algum campo está em branco.')
         except ValueError as error:
             raise error
         finally:
@@ -92,7 +90,7 @@ class DBFunctions:
     @staticmethod
     def select_sus(num_sus):
         """Busca prontuario pelo número do mesmo."""
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM prontuarios WHERE num_sus=?',
@@ -108,7 +106,7 @@ class DBFunctions:
     @staticmethod
     def select_nome(nome_paciente):
         """Busca prontuario com o nome do paciente."""
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM prontuarios '
@@ -125,7 +123,7 @@ class DBFunctions:
     @staticmethod
     def select_sus_nome(num_sus, nome_paciente):
         """Busca mais precisa com número do prontuario e nome do paciente."""
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM prontuarios '
@@ -142,7 +140,7 @@ class DBFunctions:
     @staticmethod
     def select_devolvidos(num_sus=None):
         """Lista todos os prontuários devolvidos."""
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             if num_sus == DEFAULT_VALUE:
@@ -160,7 +158,7 @@ class DBFunctions:
     @staticmethod
     def select_nao_devolvidos(num_sus=None):
         """Lista todos os prontuários não devolvidos."""
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             if num_sus == DEFAULT_VALUE:
                 cursor = conn.cursor()
@@ -178,7 +176,7 @@ class DBFunctions:
     @staticmethod
     def update_saida(num_sus, dt_hr_saida, usuario):
         """Cadastra saída do prontuario do arquivo."""
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('pragma foreign_keys=ON')
@@ -198,7 +196,7 @@ class DBFunctions:
     @staticmethod
     def update_entregue(num_sus, dt_hr_devolucao, usuario):
         """Cadastra devolução do prontuário no arquivo."""
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('pragma foreign_keys=ON')
@@ -218,7 +216,7 @@ class DBFunctions:
     @staticmethod
     def delete_prontuario(num_sus):
         """Deleta prontuarios."""
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('pragma foreign_keys=ON')
@@ -234,7 +232,7 @@ class DBFunctions:
     @staticmethod
     def select_all_prontuarios():
         """Lista todos os já cadastrados do DB."""
-        conn = sqlite3.connect('../db/arquivo.db')
+        conn = sqlite3.connect('./db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('pragma foreign_keys=ON')
@@ -323,7 +321,7 @@ class DBFunctions:
     @staticmethod
     def select_all_usuarios():
         """Retorna lista de todos usuários cadastradaos (só o adm tem acesso)."""
-        conn = sqlite3.connect('./db/arquivo.db')
+        conn = sqlite3.connect('../db/arquivo.db')
         try:
             cursor = conn.cursor()
             cursor.execute('pragma foreign_keys=ON')
@@ -340,6 +338,8 @@ if __name__ == '__main__':
     # db = DBFunctions()
     # conn = sqlite3.connect('arquivo.db')
     # cursor = conn.cursor()
+    # cursor.execute('SELECT * FROM prontuarios')
+    # print(cursor.fetchall())
     # print(db.select_all_usuarios())
     # db.resgister_usuario('Maik Marques', 'Maik4521', 'A1515151sss')
     # hash_senha = hashing.hashing_validate_password('A1515151sss', usuario[3])

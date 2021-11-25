@@ -7,6 +7,7 @@ class LoginInterfaceLines:
     def __init__(self):
         self._login_layout = None
         self._login_window = None
+        self.__id_usuario = None
 
         # Lines --------------------------------------------------------------------------------------------------------
         self._login_window_greetings = [
@@ -119,8 +120,10 @@ class LoginInterfaceLines:
     def login_window(self):
         return self._login_window
 
-    # Fixing focus doted line bug
-    @staticmethod
-    def fix_doted_line():
-        style = sg.ttk.Style()
-        style.configure('Tab', focuscolor=sg.theme_background_color('#d1d1d1'))
+    @property
+    def id_usuario(self):
+        return self.__id_usuario
+
+    @id_usuario.setter
+    def id_usuario(self, usuario):
+        self.__id_usuario = usuario

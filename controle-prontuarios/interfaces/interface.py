@@ -1,13 +1,12 @@
 import PySimpleGUI as sg
+import funcs.validate_funcs as vf
 from interfaces.consts import Keys
 from interfaces.login_interface_lines import LoginInterfaceLines
 from interfaces.main_interface_lines import MainInterfaceLines
 
-
 ##################
 # Class ########## -----------------------------------------------------------------------------------------------------
 ##################
-
 
 class Interface(LoginInterfaceLines, MainInterfaceLines):
     """Monta todas as telas."""
@@ -22,9 +21,9 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
         self.__main_events = None
         self.__main_values = None
 
-    ###################
-    # Getters ######### ------------------------------------------------------------------------------------------------
-    ###################
+    #######################
+    # Getters and Setters # --------------------------------------------------------------------------------------------
+    #######################
 
     @property
     def login_events(self):
@@ -103,11 +102,13 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
 
     @staticmethod
     def make_popup(msg):
+        """Faz a janela de popup de aviso."""
         return sg.PopupOK(msg, font=('Arial Black', 12), background_color='#f9f9f9', text_color='#00345B',
                           button_color='#ff5858', line_width=27, no_titlebar=True)
 
     @staticmethod
     def make_error_popup(error):
+        """Faz a janela de popup de erro."""
         return sg.PopupOK(error, font=('Arial Black', 12), background_color='#f9f9f9', text_color='#ff5858',
                           button_color='#ff5858', line_width=27, no_titlebar=True)
 
@@ -131,25 +132,45 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
     def return_reg(self):
         """Retorna valores da aba registro."""
         sus = str(self.main_values[Keys.R_INPUT_SUS])
-        nome = str(self.main_values[Keys.R_INPUT_NOME])
-        sexo = str(self.main_values[Keys.R_INPUT_SEXO_F] if not self.main_values[Keys.R_INPUT_SEXO_M] else self.main_values[Keys.R_INPUT_SEXO_M])
-        dt_nasc = str(self.return_formated_nasc())
-        mae = str(self.main_values[Keys.R_INPUT_MAE])
-        return sus, nome, sexo, dt_nasc, mae
+        nome = self.main_values[Keys.R_INPUT_NOME]
+        sexo = self.return_sexo()
+        dt_nasc = self.return_formated_nasc()
+        mae = self.main_values[Keys.R_INPUT_MAE]
+        usuario = self.id_usuario
+        if vf.validate_register(sus, nome, sexo, dt_nasc, mae):
+            return sus, nome, sexo, dt_nasc, usuario, mae
+
+    def return_sexo(self):
+        """Verifica qual opção do sexo foi selecionada e retorna o mesmo."""
+        if self.main_values[Keys.R_INPUT_SEXO_F]:
+            return 'F'
+        elif self.main_values[Keys.R_INPUT_SEXO_M]:
+            return 'M'
 
     def return_formated_nasc(self):
         """Retorna a data formatada."""
-        mes_dic = {'Jan': '01', 'Fev': '02', 'Mar': '03', 'Abr': '04', 'Mai': '05', 'Jun': '06',
+        meses = {'Jan': '01', 'Fev': '02', 'Mar': '03', 'Abr': '04', 'Mai': '05', 'Jun': '06',
                     'Jul': '07', 'Ago': '08', 'Set': '09', 'Out': '10', 'Nov': '11', 'Dez': '12'}
         ano = self.main_values[Keys.R_INPUT_NASC_ANO]
-        mes = mes_dic[self.main_values[Keys.R_INPUT_NASC_MES]]
+        mes = meses[self.main_values[Keys.R_INPUT_NASC_MES]]
         dia = self.main_values[Keys.R_INPUT_NASC_DIA]
-        dt_nasc = str(f'{ano}-{mes}-{dia}')
+        dt_nasc = f'{ano}-{mes}-{dia}'
         return dt_nasc
 
     ##################
     # Update Methods # -------------------------------------------------------------------------------------------------
     ##################
+
+    def clean_tab_cadastro(self):
+        """Limpa todos os campos da tab cadastro."""
+        self._main_window[Keys.R_INPUT_SUS].update(value='')
+        self._main_window[Keys.R_INPUT_NOME].update(value='')
+        self._main_window[Keys.R_INPUT_MAE].update(value='')
+        self._main_window[Keys.R_INPUT_SEXO_M].update(value=False)
+        self._main_window[Keys.R_INPUT_SEXO_F].update(value=False)
+        self._main_window[Keys.R_INPUT_NASC_DIA].update(value='Dia')
+        self._main_window[Keys.R_INPUT_NASC_MES].update(value='Mês')
+        self._main_window[Keys.R_INPUT_NASC_ANO].update(value='Ano')
 
     def update_main_window(self):
         """Atualiza as valores da tela principal."""

@@ -4,6 +4,7 @@ from interfaces.consts import ErrorPopup as error
 from re import match
 from datetime import datetime
 from db.db_functions import DBFunctions as db
+from interfaces.login_interface_lines import LoginInterfaceLines as login
 
 ########################################################################################################################
 # AQUI ESTÃO AS FUNÇÕES PARA VALIDAÇÕES DE DADOS DE ENTRADA DE USUÁRIOS E PRONTUÁRIOS ##################################
@@ -12,7 +13,6 @@ from db.db_functions import DBFunctions as db
 ###################
 # Functions #######-----------------------------------------------------------------------------------------------------
 ###################
-
 
 # Usuários -----------------------------------
 def validate_register_usuario(usuario, senha):
@@ -27,14 +27,17 @@ def validate_register_usuario(usuario, senha):
 
 
 def validate_login_usuario(usuario_digitado, senha_digitada):
-    """Validação de usuário para login no sistema."""
+    """Validação de usuário para login no sistema e guarda o id do usuario logado, caso esteja tudo certo."""
     if not usuario_digitado or not senha_digitada:
         raise error.USUARIO_INVALIDO_ERROR
     usuario = db.select_usuario(usuario_digitado)
+    if not usuario:
+        raise error.USUARIO_INVALIDO_ERROR
     senha_db = usuario[3]
     salt = usuario[4]
     hash_senha_digitada = pf.hashing_validate_password(senha_digitada, salt)
     if hash_senha_digitada == senha_db:
+        login.id_usuario = usuario[0]
         return 1
     else:
         raise error.USUARIO_INVALIDO_ERROR
@@ -50,8 +53,11 @@ def validate_register(num_sus, nome_paciente, sexo, dt_nasc, nome_mae=''):
     if len(nome_mae) >= 1:
         if not match(Regex.NOME_REGEX, nome_mae):
             raise error.MAE_ERROR
-    if not match(Regex.SEXO_REGEX, sexo):
+    if not sexo:
         raise error.SEXO_ERROR
+    else:
+        if not match(Regex.SEXO_REGEX, sexo):
+            raise error.SEXO_ERROR
     if not match(Regex.DATA_REGEX, dt_nasc):
         raise error.NASC_ERROR
     return 1

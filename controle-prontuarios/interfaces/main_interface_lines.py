@@ -12,9 +12,8 @@ class MainInterfaceLines:
 
         # Elements Lines -----------------------------------------------------------------------------------------------
         # Var
-        days = ([i for i in range(1, 32)])
-        mounths = ('Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
-                    'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez')
+        days = [i for i in range(1, 32)]
+        mounths = ('Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez')
         years = [int(year) for year in range(date.today().year, date.today().year - 150, -1)]
 
         # Lines --------------------------------------------------------------------------------------------------------
@@ -155,9 +154,11 @@ class MainInterfaceLines:
                      pad=((0, 0), (10, 0)),
                      text_color='#00345B',
                      background_color='#dcdcdc')],
-            [sg.Listbox(values=[],
+            [sg.Listbox(values=[['Maria', 'Atonia'], ['Carlos', 'Maria']],
                         key='-board-',
                         font=('Arial', 10),
+                        select_mode=1,
+                        enable_events=True,
                         highlight_text_color='#00345B',
                         highlight_background_color='#d1d1d1',
                         size=(65, 6),
@@ -280,7 +281,7 @@ class MainInterfaceLines:
             )
         ]
 
-        # In/Out Frame
+        # In/Out Frame = IO
         self._in_out_frame = [
             sg.Frame(layout=[
                 [self._in_out_left_column,
@@ -300,9 +301,3 @@ class MainInterfaceLines:
     @property
     def main_window(self):
         return self._main_window
-
-    # Fixing focus doted line bug on TabGroup()
-    @staticmethod
-    def fix_doted_line():
-        style = sg.ttk.Style()
-        style.configure('Tab', focuscolor=sg.theme_background_color('#d1d1d1'))
