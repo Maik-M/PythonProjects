@@ -23,13 +23,15 @@ class Keys:
     R_BUTTON_CADASTRAR = '-r_button_cadastrar-'
     R_BUTTON_LIMPAR = '-r_button_limpar-'
 
-    F_INPUT_SUS = '-f_sus-'
-    F_INPUT_NOME = '-f_nome-'
-    F_INPUT_NASC_DIA = '-f_nascimento_dia-'
-    F_INPUT_NASC_MES = '-f_nascimento_mes-'
-    F_INPUT_NASC_ANO = '-f_nascimento_ano-'
-    F_BUTTON_BUSCAR = '-f_button_buscar-'
-    F_BUTTON_LIMPAR = '-f_button_limpar-'
+    S_INPUT_SUS = '-s_sus-'
+    S_INPUT_NOME = '-s_nome-'
+    S_INPUT_NASC_DIA = '-s_nascimento_dia-'
+    S_INPUT_NASC_MES = '-s_nascimento_mes-'
+    S_INPUT_NASC_ANO = '-s_nascimento_ano-'
+    S_BUTTON_BUSCAR = '-s_button_buscar-'
+    S_BUTTON_LIMPAR = '-s_button_limpar-'
+    S_BUTTON_DEVOLVIDOS = '-s_button_devolvidos-'
+    S_BUTTON_N_DEVOLVIDOS = '-s_button_n_devolvidos-'
 
     IO_INPUT_SUS = '-io_sus-'
     IO_INPUT_FUNCIONARIO = '-io_funcionario-'
@@ -41,10 +43,24 @@ class Keys:
     IO_BUTTON_CHEGADA = '-io_chegada-'
     IO_BUTTON_LIMPAR = '-io_limpar-'
 
-    OUTPUT_BOARD = '-board-'
-    BOARD_BUTTON_DELETAR = '-b_button_deletar-'
-    BOARD_BUTTON_EDITAR = '-b_button_editar-'
-    BOARD_BUTTON_LIMPAR = '-b_button_limpar-'
+    SEARCH_R_OUTPUT = '-search_result_output-'
+    SEARCH_R_BUTTON_LIMPAR = '-search_result_limpar-'
+
+    EDIT_DEL_BUTTON_DELETAR = '-edit_delete_button_deletar-'
+    EDIT_DEL_BUTTON_EDITAR = '-edit_delete_button_editar-'
+    EDIT_DEL_BUTTON_LIMPAR = '-edit_delete_button_limpar-'
+
+    N_ENTREGUE_VALUE = 0
+    ENTREGUE_VALUE = 1
+    SEM_MOVIMENTO_VALUE = -1
+    N_ENTREGUE_STR = 'NÃO ENTREGUE'
+    ENTREGUE_STR = 'ENTREGUE'
+    SEM_MOVIMENTO_STR = 'SEM MOVIMENTO'
+    DB_NONE = '-----'
+
+
+    MOUTHS = {'Jan': '01', 'Fev': '02', 'Mar': '03', 'Abr': '04', 'Mai': '05', 'Jun': '06',
+                    'Jul': '07', 'Ago': '08', 'Set': '09', 'Out': '10', 'Nov': '11', 'Dez': '12', 'Mês': 'Mês'}
 
 ###################
 # Popup ########### ----------------------------------------------------------------------------------------------------
@@ -53,6 +69,8 @@ class Keys:
 class Popup:
     """Classe que guarda todas as mensagens de aviso."""
     REGISTRO_MSG = 'Prontuário cadastrado com sucesso!'
+    SAIDA_PRONTUARIO = 'Você deu retirada no pronturio!'
+    DEVOLUCAO_PRONTUARIO = 'Você deu baixa no prontuário. Eles está de volta ao arquivo.'
 
 ###################
 # ErrorPopup ###### ----------------------------------------------------------------------------------------------------
@@ -60,11 +78,12 @@ class Popup:
 
 class ErrorPopup:
     """Classe que guarda todas as mensagens de erro."""
-    USUARIO_ERROR = ValueError(19*' '+'ERRO!\nO usuário pode conter: Lestrar, Números, "-", "_", ".".\nNão aceita espaço e deve conter de 4 à 10 caractéres!')
+    USUARIO_ERROR = ValueError(19*' '+'ERRO!\nO usuário pode conter: Letras, Números, "-", "_", ".".\nNão aceita espaço e deve conter de 4 à 10 caractéres!')
     SENHA_ERROR = ValueError(19*' '+'ERRO!\nA senha deve conter de 5 à 12 caractéres!')
     USUARIO_INVALIDO_ERROR = ValueError(19*' '+'ERRO!\nUsuário ou senha inválidos.')
-    USUARIO_EXISTENTE_ERROR = ValueError('ERRO!\nUsuário já cadastrado!')
-    SUS_ERROR = ValueError(19*' '+'ERRO!\nO nome do paciente deve conter de 5 à 80 letras e não deve conter números!')
+    USUARIO_EXISTENTE_ERROR = ValueError(19*' '+'ERRO!\nUsuário já cadastrado!')
+    N_ENCONTRADO_ERROR = ValueError(19*' '+'Prontuário não encontrado!')
+    SUS_ERROR = ValueError(19*' '+'ERRO!\nO número do SUS só aceita número e deve conter 15 números!')
     NOME_ERROR = ValueError(19*' '+'ERRO!\nO nome do paciente deve conter de 5 à 80 letras e não deve conter números!')
     MAE_ERROR = ValueError('ERRO!\nNome da mãe não é obrigatório, mas caso for preenchido, deve conter de 5 à 80 letras e não conter números!')
     SEXO_ERROR = ValueError(19*' '+'ERRO!\nSexo não informado!')
@@ -76,7 +95,8 @@ class ErrorPopup:
     HORA_MENOR_ERROR = ValueError(19*' '+'ERRO!\nDatas iguais! Nesse caso, a hora da chegada não pode ser menor que a da saída!')
     DEVOLVIDO_ERROR = ValueError(19*' '+'ERRO!\nProntuário já foi devolvido! Verifique o número do SUS.')
     NAO_DEVOLVIDO_ERROR = ValueError(19*' '+'ERRO!\nEsse prontuário ainda não foi devolvido! Verifiquei o número do SUS.')
-    SEM_MOVIMENTO_ERROR = ValueError(19*' '+'ERRO!\nProntuário ainda sem movimentação!')
+    SEM_MOVIMENTO_ERROR = ValueError(19*' '+'ERRO!\nNão é possível continuar, pois o prontuário ainda está sem movimentação! Verifique se o SUS está correto.')
+    INPUT_EM_BRANCO = ValueError(19*' '+'ERRO!\nTodos os campos estão vazios!')
 
 ###################
 # Regex ###########-----------------------------------------------------------------------------------------------------

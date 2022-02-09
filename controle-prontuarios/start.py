@@ -17,27 +17,41 @@ while True:
         gui.input_login_values()
         if gui.login_events == Keys.L_BUTTON_ENTRAR:
             if vf.validate_login_usuario(gui.login_values[Keys.L_INPUT_LOGIN], gui.login_values[Keys.L_INPUT_SENHA]):
+                gui.clean_login()
                 gui.login_window.hide()
                 gui.make_main_window()
                 while True:
                     try:
                         gui.input_main_values()
                         if gui.main_events == Keys.R_BUTTON_CADASTRAR:
-                            dados = gui.return_reg()
+                            dados = gui.return_register_values()
                             db.insert_prontuario(dados[0], dados[1], dados[2], dados[3], dados[4], dados[5])
+                            gui.clean_tab_cadastro()
                             gui.make_popup(Popup.REGISTRO_MSG)
                         if gui.main_events == Keys.R_BUTTON_LIMPAR:
                             gui.clean_tab_cadastro()
-                        if gui.main_events == Keys.F_BUTTON_BUSCAR:
-                            pass
-                        if gui.main_events == Keys.F_BUTTON_LIMPAR:
-                            pass
+                        if gui.main_events == Keys.S_BUTTON_BUSCAR:
+                            gui.update_search_result()
+                        if gui.main_events == Keys.S_BUTTON_LIMPAR:
+                            gui.clean_search()
+                        if gui.main_events == Keys.SEARCH_R_BUTTON_LIMPAR:
+                            gui.clean_search_result()
+                        if gui.main_events == Keys.S_BUTTON_DEVOLVIDOS:
+                            gui.update_search_result_devolvidos()
+                        if gui.main_events == Keys.S_BUTTON_N_DEVOLVIDOS:
+                            gui.update_search_result_n_devolvidos()
                         if gui.main_events == Keys.IO_BUTTON_SAIDA:
-                            pass
+                            dados = gui.return_out_values()
+                            db.update_saida(dados[0], dados[1], dados[2], dados[3])
+                            gui.make_popup(Popup.SAIDA_PRONTUARIO)
+                            gui.clean_io()
                         if gui.main_events == Keys.IO_BUTTON_CHEGADA:
-                            pass
+                            dados = gui.return_in_values()
+                            db.update_entregue(dados[0], dados[1], dados[2], dados[3])
+                            gui.make_popup(Popup.DEVOLUCAO_PRONTUARIO)
+                            gui.clean_io()
                         if gui.main_events == Keys.IO_BUTTON_LIMPAR:
-                            pass
+                            gui.clean_io()
                         if gui.main_events == sg.WINDOW_CLOSED:
                             gui.login_window.close()
                             gui.main_window.close()
