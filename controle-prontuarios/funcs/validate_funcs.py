@@ -80,6 +80,40 @@ def validate_search(num_sus='', nome_paciente='', dt_nasc='Ano-Mês-Dia'):
     return 1
 
 
+def validate_edit(num_sus, nome_paciente, sexo, dt_nasc, nome_mae):
+    """Valida os dados antes de alterar."""
+    if (not nome_paciente) and (not sexo) and (dt_nasc == 'Ano-Mês-Dia') and (not nome_mae):
+        raise ValueError('ERRO: Nenhum dado informado pra alteração! Por favor, informe o dado que vocÊ deseja alterar.')
+    else:
+        if len(nome_paciente) >= 1:
+            if not match(Regex.NOME_REGEX, nome_paciente):
+                raise error.NOME_ERROR
+            db.update_nome(nome_paciente, num_sus)
+        if len(nome_mae) >= 1:
+            if not match(Regex.NOME_REGEX, nome_mae):
+                raise error.MAE_ERROR
+            db.update_mae(nome_mae, num_sus)
+        if dt_nasc != 'Ano-Mês-Dia':
+            if not match(Regex.DATA_REGEX, dt_nasc):
+                raise error.NASC_ERROR
+            db.update_nascimento(dt_nasc, num_sus)
+        if sexo:
+            if not match(Regex.SEXO_REGEX, sexo):
+                raise error.SEXO_ERROR
+            db.update_sexo(sexo, num_sus)
+
+
+
+def validate_sus(num_sus):
+    """Valida o número do sus e se existe algum prontuário com esse número."""
+    if not match(Regex.SUS_REGEX, num_sus):
+        raise error.SUS_ERROR
+    db_return = db.select_sus(num_sus)
+    if not db_return:
+        raise error.N_ENCONTRADO_ERROR
+    return  1
+
+
 def validate_search_input(num_sus, nome_paciente, dt_nasc):
     """Valida a saída de dados de pesquisa do DB, caso não encontre, retorna um erro."""
     if (not num_sus) and (not nome_paciente) and (dt_nasc == 'Ano-Mês-Dia'):

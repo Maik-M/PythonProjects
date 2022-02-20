@@ -109,21 +109,48 @@ class MainInterfaceLines:
                        key='-io_limpar-', size=(10, 1), pad=((5, 5), (10, 10)))]
         ]
 
+        # Edit / Delete Lines
+        self._edit_del_search_line = [
+            [sg.Text('N° SUS DO PRONTUÁRIO QUE DESEJA EDITAR / EXCLUIR',
+                     font=('Arial', 8), pad=(5, 0), text_color='#00345B', background_color='#d1d1d1')],
+            [sg.Input(key='-edit_del_search_sus-', size=(20, 1), pad=((5, 5), (0, 5))),
+             sg.Button('Editar', key='-edit_button-', font=('Helvetica', 8), size=(7, 1), pad=((5, 5), (0, 5))),
+             sg.Button('Excluir', key='-delete_button-', font=('Helvetica', 8), size=(7, 1), pad=((5, 5), (0, 5))),
+             sg.Button('Limpar', key='-edit_delete_limpar-', font=('Helvetica', 8), size=(7, 1), pad=((5, 5), (0, 5)))]
+        ]
+
+        self._edit_left_line = [
+            [sg.Text('NOME DO PACIENTE (NOVO)',
+                     font=('Arial', 8), pad=((5, 5), (0, 0)), text_color='#00345B', background_color='#d1d1d1')],
+            [sg.Input(key='-edit_nome-', pad=((5, 5), (0, 5)))],
+            [sg.Text('NOME DA MÃE (NOVO)',
+                     font=('Arial', 8), pad=((5, 5), (0, 0)), text_color='#00345B', background_color='#d1d1d1')],
+            [sg.Input(key='-edit_nome_mae-', pad=((5, 5), (0, 5)))]
+        ]
+
+        self._edit_right_line = [
+            [sg.Text('SEXO (NOVO)',
+                     font=('Arial', 8), pad=((5, 5), (0, 0)), text_color='#00345B', background_color='#d1d1d1')],
+            [sg.Radio('M', 'SEXO_EDIT',
+                      key='-edit_sexo_M-', font=('Arial', 8), pad=((5, 5), (0, 5)), text_color='#00345B',
+                      background_color='#d1d1d1'),
+             sg.Radio('F', 'SEXO_EDIT',
+                      key='-edit_sexo_F-', font=('Arial', 8), pad=((5, 5), (0, 5)), text_color='#00345B',
+                      background_color='#d1d1d1')],
+            [sg.Text('DATA DE NASCIMENTO (NOVA)',
+                     font=('Arial', 8), pad=((5, 5), (5, 0)), text_color='#00345B', background_color='#d1d1d1')],
+            [sg.OptionMenu(values=days,
+                           key='-edit_nascimento_dia-', default_value='Dia', size=(2, 1)),
+             sg.OptionMenu(values=[mounth for mounth in mounths],
+                           key='-edit_nascimento_mes-', default_value='Mês', size=(4, 1)),
+             sg.OptionMenu(values=years,
+                           key='-edit_nascimento_ano-', default_value='Ano', size=(4, 1))]
+        ]
+
         # Search Result Line
         self._search_result_line = [
             [sg.Output(key='-search_result_output-',font=('Liberation Mono', 7), text_color='#00345B', background_color='#ffffff', expand_y=True,
-                       size=(110, 19), pad=(0, 0))]
-        ]
-
-
-        # Edit and Delete Line
-        self._edit_delete_buttons_line = [
-            [sg.Button('Deletar',
-                       key='-edit_delete_button_deletar-', expand_x=True)],
-            [sg.Button('Editar',
-                       key='-edit_delete_button_editar-', expand_x=True)],
-            [sg.Button('Limpar',
-                       key='-edit_delete_button_limpar-', expand_x=True)]
+                       size=(112, 16), pad=(0, 0))]
         ]
 
         # Columns ------------------------------------------------------------------------------------------------------
@@ -143,13 +170,9 @@ class MainInterfaceLines:
             key='-search_left_column-', element_justification='left', background_color='#d1d1d1', pad=((5, 0), (0, 0))
         )
         self._search_right_column = sg.Column(
-            self._search_buttons_line, key='-search_right_column-', element_justification='center', background_color='#d1d1d1', pad=(60, 0)
+            self._search_buttons_line,
+            key='-search_right_column-', element_justification='center', background_color='#d1d1d1', pad=(60, 0)
         )
-        # self._search_buttons_column = sg.Column(
-        #     self._search_buttons_line,
-        #     key='-search_buttons_column-', element_justification='right', vertical_alignment='bottom', background_color='#d1d1d1',
-        #     expand_x=True, pad=((0, 56), (5, 7))
-        # )
 
         # In/Out Column
         self._in_out_left_column = sg.Column(
@@ -161,17 +184,24 @@ class MainInterfaceLines:
             key='-column_entrada_right-', element_justification='center', vertical_alignment='center', background_color='#d1d1d1', pad=((63, 37), (0, 0))
         )
 
+        # Edit / Delete Column
+        self._edit_del_search_column = sg.Column(
+            self._edit_del_search_line,
+            key='-edit_del_search_column-', background_color='#d1d1d1', pad=(5, 0)
+        )
+        self._edit_left_column = sg.Column(
+            self._edit_left_line,
+            key='-edit_left_column-', background_color='#d1d1d1', pad=(5, 0)
+        )
+        self._edit_right_column = sg.Column(
+            self._edit_right_line,
+            key='-edit_right_column-', element_justification='left', vertical_alignment='bottom', background_color='#d1d1d1'
+        )
 
         # Search Result Column
         self._search_result_column = sg.Column(
             self._search_result_line,
             key='-search_result_column-', background_color='#ffffff', expand_x=True, size=(0, 206), pad=(0, 0)
-        )
-
-        # Edit and Delele Buttons Column
-        self._edit_delete_buttons_column = sg.Column(
-            self._edit_delete_buttons_line,
-            key='-edit_delete_buttons_column-', background_color='#dcdcdc', vertical_alignment='bottom', pad=((27, 5), (0, 5))
         )
 
         # Frames -------------------------------------------------------------------------------------------------------
@@ -208,11 +238,25 @@ class MainInterfaceLines:
                 background_color='#d1d1d1', expand_x=True, border_width=2, size=(0, 200), pad=((0, 0), (10, 0)))
         ]
 
+        # Edit / Delete Frame
+        self._edit_delete_frame = [
+            sg.Frame(layout=[
+                [self._edit_del_search_column],
+                [sg.HorizontalSeparator(pad=(10, (5, 8)))],
+                [self._edit_left_column,
+                 sg.VerticalSeparator(pad=((2, 2), (3, 3))),
+                 self._edit_right_column]
+            ], title='  EDITAR OU EXCLUIR PRONTUÁRIOS  ', key='-edit_del_frame-', font=('Arial Black', 10),
+                title_color='#00345B',
+                background_color='#d1d1d1', expand_x=True, border_width=2, size=(0, 200), pad=((0, 0), (10, 0))
+            )
+        ]
+
         # Search Result Frame
         self._search_result_frame = [
             sg.Frame(layout=[
                 [self._search_result_column]
-        ], title='', key='-search_result_frame-', background_color='#ffffff', expand_x=True, border_width=2, size=(0, 205), pad=((0, 0), (5, 0)))
+        ], title='', key='-search_result_frame-', background_color='#ffffff', expand_x=True, border_width=2, size=(0, 205), pad=((5, 5), (5, 5)))
         ]
 
     @property

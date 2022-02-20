@@ -43,12 +43,21 @@ class Keys:
     IO_BUTTON_CHEGADA = '-io_chegada-'
     IO_BUTTON_LIMPAR = '-io_limpar-'
 
+    EDIT_DEL_SEARCH_SUS = '-edit_del_search_sus-'
+    EDIT_NOME = '-edit_nome-'
+    EDIT_MAE = '-edit_nome_mae-'
+    EDIT_SEXO_M = '-edit_sexo_M-'
+    EDIT_SEXO_F = '-edit_sexo_F-'
+    EDIT_NASC_DIA = '-edit_nascimento_dia-'
+    EDIT_NASC_MES = '-edit_nascimento_mes-'
+    EDIT_NASC_ANO = '-edit_nascimento_ano-'
+    EDIT_BUTTON = '-edit_button-'
+    DEL_BUTTON = '-delete_button-'
+    EDIT_DEL_LIMPAR_BUTTON = '-edit_delete_limpar-'
+
+
     SEARCH_R_OUTPUT = '-search_result_output-'
     SEARCH_R_BUTTON_LIMPAR = '-search_result_limpar-'
-
-    EDIT_DEL_BUTTON_DELETAR = '-edit_delete_button_deletar-'
-    EDIT_DEL_BUTTON_EDITAR = '-edit_delete_button_editar-'
-    EDIT_DEL_BUTTON_LIMPAR = '-edit_delete_button_limpar-'
 
     N_ENTREGUE_VALUE = 0
     ENTREGUE_VALUE = 1
@@ -69,8 +78,15 @@ class Keys:
 class Popup:
     """Classe que guarda todas as mensagens de aviso."""
     REGISTRO_MSG = 'Prontuário cadastrado com sucesso!'
-    SAIDA_PRONTUARIO = 'Você deu retirada no pronturio!'
-    DEVOLUCAO_PRONTUARIO = 'Você deu baixa no prontuário. Eles está de volta ao arquivo.'
+    SAIDA_PRONTUARIO_MSG = 'Você deu retirada no pronturio!'
+    DEVOLUCAO_PRONTUARIO_MSG = 'Você deu baixa no prontuário. Eles está de volta ao arquivo.'
+    EDITAR_MSG = 'Você realmente deseja editar o prontuário?'
+    EDITADO_MSG = 'Dados alterados com sucesso!'
+    EXCLUIR_MSG = 'Você realmente deseja excluir o prontuário?'
+    EXCLUIDO_MSG = 'Prontuário excluído com sucesso!'
+
+    YES = 'Yes'
+    NO = 'No'
 
 ###################
 # ErrorPopup ###### ----------------------------------------------------------------------------------------------------
@@ -106,7 +122,7 @@ class Regex:
     """Classe que guarda toda regra do REGEX."""
     USUARIO_REGEX = compile(r'[a-zA-Z0-9-_.]{4,10}$')
     SENHA_REGEX = compile(r'[a-z A-Z0-9-_@#*]{5,12}$')
-    SUS_REGEX = compile(r'[^a-zA-Z]{15}$')
+    SUS_REGEX = compile(r'[^a-zA-Z à-úÀ-Ú]{15}$')
     NOME_REGEX = compile(r'[a-zA-Z à-úÀ-Ú]{5,80}$')
     SEXO_REGEX = compile(r'[MF]$')
     DATA_REGEX = compile(r'(([1]|[2])([0-9]{3}))-(([0][1-9])|([1][0-2]))-(([0][1-9])|([1-2][0-9])|([3][0-1]))$')

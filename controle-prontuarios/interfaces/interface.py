@@ -58,9 +58,10 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
             )
             ]
         ]
-        self._login_window = sg.Window('Controle de Prontuários',
+        self._login_window = sg.Window('Controle de Prontuários - LOGIN',
                                        self._login_layout,
-                                       size=(600, 400), background_color='#dcdcdc', finalize=True)
+                                       size=(600, 400), titlebar_icon='./img/medicine-icon.png/', use_custom_titlebar=True,
+                                       titlebar_background_color='white', titlebar_text_color='#00354B', titlebar_font=('Arial Black', 10), background_color='#dcdcdc', finalize=True)
 
     def make_main_window(self):
         """Faz a tela principal."""
@@ -76,19 +77,20 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
                      self._in_out_frame
                  ], background_color='#d1d1d1'),
                  sg.Tab(title='Editar / Excluir', key='-tab_editar_excluir-', layout=[
-
+                     self._edit_delete_frame
                  ], background_color='#d1d1d1')
                  ]
-            ], key='-tab_group-', expand_x=True, pad=(0, 0), focus_color='#d1d1d1', selected_title_color='#000000',
+            ], key='-tab_group-', expand_x=True, pad=((5, 5), (10, 0)), focus_color='#d1d1d1', selected_title_color='#000000',
                 selected_background_color='#d1d1d1', background_color='#dcdcdc', border_width=0)],
             [sg.Text('RESULTADO DE BUSCAS',
-                     font=('Arial Black', 8), text_color='white', background_color='#00354B', expand_x=True, pad=((0, 0), (15, 0))),
+                     font=('Arial Black', 8), text_color='white', background_color='#00354B', expand_x=True, pad=((5, 5), (15, 0))),
              sg.Button('Limpar',
-                       key='-search_result_limpar-', size=(10, 1), pad=((5, 0), (15, 0)))],
+                       key='-search_result_limpar-', size=(10, 1), pad=((5, 5), (15, 0)))],
             [self._search_result_frame]
         ]
         self._main_window = sg.Window('Controle de Prontuários',
-                                      self._main_layout, size=(600, 500), background_color='#dcdcdc', finalize=True)
+                                      self._main_layout, size=(600, 500), titlebar_icon='./img/medicine-icon.png/', use_custom_titlebar=True,
+                                      titlebar_background_color='white', titlebar_text_color='#00354B', titlebar_font=('Arial Black', 10), background_color='#dcdcdc', finalize=True)
 
     @staticmethod
     def make_popup(msg):
@@ -101,6 +103,12 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
         """Faz a janela de popup de erro."""
         return sg.PopupOK(error, font=('Arial Black', 12), background_color='#f9f9f9', text_color='#ff5858',
                           button_color='#ff5858', line_width=27, no_titlebar=True)
+
+    @staticmethod
+    def make_warning_popup(msg):
+        """Faz janela de popup de aviso de confirmação."""
+        return sg.PopupYesNo(msg, font=('Arial Black', 12), background_color='#f9f9f9', text_color='#00345B',
+                             button_color='#ff5858', line_width=27, no_titlebar=True)
 
 
     ###########################
@@ -123,7 +131,7 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
         """Retorna valores da aba registro."""
         sus = str(self.main_values[Keys.R_INPUT_SUS])
         nome = self.main_values[Keys.R_INPUT_NOME]
-        sexo = self.__return_sexo()
+        sexo = self.__return_sexo(Keys.R_INPUT_SEXO_F, Keys.R_INPUT_SEXO_M)
         dt_nasc = self.__return_formated_date(Keys.R_INPUT_NASC_ANO, Keys.R_INPUT_NASC_MES, Keys.R_INPUT_NASC_DIA)
         mae = self.main_values[Keys.R_INPUT_MAE]
         usuario = self.id_usuario
@@ -137,11 +145,11 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
         if vf.validate_search(sus, nome, dt_nasc):
             return sus, nome, dt_nasc
 
-    def __return_sexo(self):
+    def __return_sexo(self, key_f, key_m):
         """Verifica qual opção do sexo foi selecionada e retorna o mesmo."""
-        if self.main_values[Keys.R_INPUT_SEXO_F]:
+        if self.main_values[key_f]:
             return 'F'
-        elif self.main_values[Keys.R_INPUT_SEXO_M]:
+        elif self.main_values[key_m]:
             return 'M'
 
     def __return_formated_date(self, key_ano, key_mes, key_dia):
@@ -206,6 +214,14 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
         if vf.validate_in(sus, nome_funcionario, dt_devolucao, hr_devolucao):
             dt_hr = f'{dt_devolucao} {hr_devolucao}'
             return sus, dt_hr, nome_funcionario, usuario
+
+    def return_edit_values(self):
+        sus = self.main_values[Keys.EDIT_DEL_SEARCH_SUS]
+        nome = self.main_values[Keys.EDIT_NOME]
+        mae = self.main_values[Keys.EDIT_MAE]
+        dt_nasc = self.__return_formated_date(Keys.EDIT_NASC_ANO, Keys.EDIT_NASC_MES, Keys.EDIT_NASC_DIA)
+        sexo = self.__return_sexo(Keys.EDIT_SEXO_F, Keys.EDIT_SEXO_M)
+        vf.validate_edit(sus, nome, sexo, dt_nasc, mae)
 
 
     ##################
@@ -274,6 +290,18 @@ class Interface(LoginInterfaceLines, MainInterfaceLines):
         self._main_window[Keys.IO_INPUT_MES].update(value='Mês')
         self._main_window[Keys.IO_INPUT_ANO].update(value='Ano')
         self._main_window[Keys.IO_INPUT_HORA].update(value='')
+
+    def clean_edit_del(self):
+        """Limpa os valores da janela Editar / Excluir."""
+        self._main_window[Keys.EDIT_DEL_SEARCH_SUS].update(value='')
+        self._main_window[Keys.EDIT_NOME].update(value='')
+        self._main_window[Keys.EDIT_MAE].update(value='')
+        self._main_window[Keys.EDIT_SEXO_M].update(value=False)
+        self._main_window[Keys.EDIT_SEXO_F].update(value=False)
+        self._main_window[Keys.EDIT_NASC_ANO].update(value='Ano')
+        self._main_window[Keys.EDIT_NASC_MES].update(value='Mês')
+        self._main_window[Keys.EDIT_NASC_DIA].update(value='Dia')
+
 
 
 if __name__ == '__main__':

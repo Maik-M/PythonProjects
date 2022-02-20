@@ -43,26 +43,41 @@ while True:
                         if gui.main_events == Keys.IO_BUTTON_SAIDA:
                             dados = gui.return_out_values()
                             db.update_saida(dados[0], dados[1], dados[2], dados[3])
-                            gui.make_popup(Popup.SAIDA_PRONTUARIO)
+                            gui.make_popup(Popup.SAIDA_PRONTUARIO_MSG)
                             gui.clean_io()
                         if gui.main_events == Keys.IO_BUTTON_CHEGADA:
                             dados = gui.return_in_values()
                             db.update_entregue(dados[0], dados[1], dados[2], dados[3])
-                            gui.make_popup(Popup.DEVOLUCAO_PRONTUARIO)
+                            gui.make_popup(Popup.DEVOLUCAO_PRONTUARIO_MSG)
                             gui.clean_io()
                         if gui.main_events == Keys.IO_BUTTON_LIMPAR:
                             gui.clean_io()
+                        if gui.main_events == Keys.EDIT_BUTTON:
+                            if vf.validate_sus(gui.main_values[Keys.EDIT_DEL_SEARCH_SUS]):
+                                event = gui.make_warning_popup(Popup.EDITAR_MSG)
+                                if event == Popup.YES:
+                                    gui.return_edit_values()
+                                    gui.make_popup(Popup.EDITADO_MSG)
+                                    gui.clean_edit_del()
+                        if gui.main_events == Keys.DEL_BUTTON:
+                            if vf.validate_sus(gui.main_values[Keys.EDIT_DEL_SEARCH_SUS]):
+                                event = gui.make_warning_popup(Popup.EXCLUIR_MSG)
+                                if event == Popup.YES:
+                                    db.delete_prontuario(gui.main_values[Keys.EDIT_DEL_SEARCH_SUS])
+                                    gui.make_popup(Popup.EXCLUIDO_MSG)
+                        if gui.main_events == Keys.EDIT_DEL_LIMPAR_BUTTON:
+                            gui.clean_edit_del()
                         if gui.main_events == sg.WINDOW_CLOSED:
                             gui.login_window.close()
                             gui.main_window.close()
                             break
                     except ValueError as error:
-                        event = gui.make_error_popup(error)
+                        gui.make_error_popup(error)
                     except sqlite3.IntegrityError as error:
-                        event = gui.make_error_popup(error)
+                        gui.make_error_popup(error)
         if gui.login_events == Keys.L_BUTTON_CADASTRAR:
             pass
         if gui.login_events == sg.WINDOW_CLOSED:
             break
     except ValueError as error:
-        event = gui.make_error_popup(error)
+        gui.make_error_popup(error)
