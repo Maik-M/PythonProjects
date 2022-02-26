@@ -15,235 +15,240 @@ from interfaces.login_interface_lines import LoginInterfaceLines as login
 ###################
 
 # Usuários -----------------------------------
-def validate_register_usuario(usuario, senha):
+def validate_new_user(user_name, user, password, re_password):
     """Valida os dados de registro de novo usuário."""
-    if not match(Regex.USUARIO_REGEX, usuario):
-        raise error.USUARIO_ERROR
-    if not match(Regex.SENHA_REGEX, senha):
-        raise error.SENHA_ERROR
-    if db.select_usuario(usuario):
-        raise error.USUARIO_EXISTENTE_ERROR
+    if len(user_name) <= 5:
+        raise error.SHORT_NAME_ERROR
+    if not match(Regex.USER_REGEX, user):
+        raise error.USER_ERROR
+    if not match(Regex.PASSWORD_REGEX, password):
+        raise error.PASSW_ERROR
+    if password != re_password:
+        raise error.PASSW_ERROR_2
+    if db.select_user(user):
+        raise error.USER_EXIST_ERROR
     return 1
 
 
-def validate_login_usuario(usuario_digitado, senha_digitada):
-    """Validação de usuário para login no sistema e guarda o id do usuario logado, caso esteja tudo certo."""
-    if not usuario_digitado or not senha_digitada:
-        raise error.USUARIO_INVALIDO_ERROR
-    usuario = db.select_usuario(usuario_digitado)
-    if not usuario:
-        raise error.USUARIO_INVALIDO_ERROR
-    senha_db = usuario[3]
-    salt = usuario[4]
-    hash_senha_digitada = pf.hashing_validate_password(senha_digitada, salt)
-    if hash_senha_digitada == senha_db:
-        login.id_usuario = usuario[0]
+def validate_user_login(user_input, password_input):
+    """Validação de usuário para login no sistema e guarda o id do user logado, caso esteja tudo certo."""
+    if not user_input or not password_input:
+        raise error.INVALID_USER_ERROR
+    user = db.select_user(user_input)
+    if not user:
+        raise error.INVALID_USER_ERROR
+    db_password = user[3]
+    salt = user[4]
+    hash_input_passw = pf.hashing_validate_password(password_input, salt)
+    if hash_input_passw == db_password:
+        login.user_id = user[0]
         return 1
     else:
-        raise error.USUARIO_INVALIDO_ERROR
+        raise error.INVALID_USER_ERROR
+
+
+def validate_return_user(id_user):
+    """Valida a busca de usuário."""
+    db_return = db.select_user_id(id_user)
+    if not db_return:
+        raise error.USER_N_FOUND_ERROR
+    return db_return[1]
 
 
 # Prontuários ------------------------------------------------------------
-def validate_register(num_sus, nome_paciente, sexo, dt_nasc, nome_mae=''):
+def validate_register(sus_number, patient_name, gender, bith_date, mother=''):
     """Valida os dados para o registro do prontuário."""
-    if not match(Regex.SUS_REGEX, num_sus):
+    if not match(Regex.SUS_REGEX, sus_number):
         raise error.SUS_ERROR
-    if not match(Regex.NOME_REGEX, nome_paciente):
-        raise error.NOME_ERROR
-    if len(nome_mae) >= 1:
-        if not match(Regex.NOME_REGEX, nome_mae):
-            raise error.MAE_ERROR
-    if not sexo:
-        raise error.SEXO_ERROR
+    if not match(Regex.NAME_REGEX, patient_name):
+        raise error.NAME_ERROR
+    if len(mother) >= 1:
+        if not match(Regex.NAME_REGEX, mother):
+            raise error.MOTHER_ERROR
+    if not gender:
+        raise error.GENDER_ERROR
     else:
-        if not match(Regex.SEXO_REGEX, sexo):
-            raise error.SEXO_ERROR
-    if not match(Regex.DATA_REGEX, dt_nasc):
-        raise error.NASC_ERROR
+        if not match(Regex.GENDER_REGEX, gender):
+            raise error.GENDER_ERROR
+    if not match(Regex.DATE_REGEX, bith_date):
+        raise error.BIRTH_ERROR
     return 1
 
 
-def validate_search(num_sus='', nome_paciente='', dt_nasc='Ano-Mês-Dia'):
+def validate_search(sus_number='', patient_name='', birth_date='Ano-Mês-Dia'):
     """Valida os dados para a pesquisa do prontuário."""
-    if (not num_sus) and (not nome_paciente) and (dt_nasc == 'Ano-Mês-Dia'):
+    if (not sus_number) and (not patient_name) and (birth_date == 'Ano-Mês-Dia'):
         raise ValueError('ERRO: Nenhum dado informado para a busca!')
     else:
-        if len(num_sus) >= 1:
-            if not match(Regex.SUS_REGEX, num_sus):
+        if len(sus_number) >= 1:
+            if not match(Regex.SUS_REGEX, sus_number):
                 raise error.SUS_ERROR
-        if len(nome_paciente) >= 1:
-            if not match(Regex.NOME_REGEX, nome_paciente):
-                raise error.NOME_ERROR
-        if dt_nasc != 'Ano-Mês-Dia':
-            if not match(Regex.DATA_REGEX, dt_nasc):
-                raise error.NASC_ERROR
+        if len(patient_name) >= 1:
+            if not match(Regex.NAME_REGEX, patient_name):
+                raise error.NAME_ERROR
+        if birth_date != 'Ano-Mês-Dia':
+            if not match(Regex.DATE_REGEX, birth_date):
+                raise error.BIRTH_ERROR
     return 1
 
 
-def validate_edit(num_sus, nome_paciente, sexo, dt_nasc, nome_mae):
+def validate_edit(sus_number, patient_name, gender, birth_date, mother):
     """Valida os dados antes de alterar."""
-    if (not nome_paciente) and (not sexo) and (dt_nasc == 'Ano-Mês-Dia') and (not nome_mae):
+    if (not patient_name) and (not gender) and (birth_date == 'Ano-Mês-Dia') and (not mother):
         raise ValueError('ERRO: Nenhum dado informado pra alteração! Por favor, informe o dado que vocÊ deseja alterar.')
     else:
-        if len(nome_paciente) >= 1:
-            if not match(Regex.NOME_REGEX, nome_paciente):
-                raise error.NOME_ERROR
-            db.update_nome(nome_paciente, num_sus)
-        if len(nome_mae) >= 1:
-            if not match(Regex.NOME_REGEX, nome_mae):
-                raise error.MAE_ERROR
-            db.update_mae(nome_mae, num_sus)
-        if dt_nasc != 'Ano-Mês-Dia':
-            if not match(Regex.DATA_REGEX, dt_nasc):
-                raise error.NASC_ERROR
-            db.update_nascimento(dt_nasc, num_sus)
-        if sexo:
-            if not match(Regex.SEXO_REGEX, sexo):
-                raise error.SEXO_ERROR
-            db.update_sexo(sexo, num_sus)
+        if len(patient_name) >= 1:
+            if not match(Regex.NAME_REGEX, patient_name):
+                raise error.NAME_ERROR
+            db.update_name(patient_name, sus_number)
+        if len(mother) >= 1:
+            if not match(Regex.NAME_REGEX, mother):
+                raise error.MOTHER_ERROR
+            db.update_mother(mother, sus_number)
+        if birth_date != 'Ano-Mês-Dia':
+            if not match(Regex.DATE_REGEX, birth_date):
+                raise error.BIRTH_ERROR
+            db.update_birth(birth_date, sus_number)
+        if gender:
+            if not match(Regex.GENDER_REGEX, gender):
+                raise error.GENDER_ERROR
+            db.update_gender(gender, sus_number)
 
 
 
-def validate_sus(num_sus):
+def validate_sus(sus_number):
     """Valida o número do sus e se existe algum prontuário com esse número."""
-    if not match(Regex.SUS_REGEX, num_sus):
+    if not match(Regex.SUS_REGEX, sus_number):
         raise error.SUS_ERROR
-    db_return = db.select_sus(num_sus)
+    db_return = db.select_sus(sus_number)
     if not db_return:
-        raise error.N_ENCONTRADO_ERROR
+        raise error.RECORD_N_FOUND_ERROR
     return  1
 
 
-def validate_search_input(num_sus, nome_paciente, dt_nasc):
+def validate_search_input(sus_number, patient_name, birth_date):
     """Valida a saída de dados de pesquisa do DB, caso não encontre, retorna um erro."""
-    if (not num_sus) and (not nome_paciente) and (dt_nasc == 'Ano-Mês-Dia'):
+    if (not sus_number) and (not patient_name) and (birth_date == 'Ano-Mês-Dia'):
         raise ValueError('ERRO: Nenhum dado informado para a busca!')
-    if (len(num_sus) >= 1) and (len(nome_paciente) >= 1):
-        dados = db.select_sus_nome(num_sus, nome_paciente)
-        if not dados:
-            raise error.N_ENCONTRADO_ERROR
+    if (len(sus_number) >= 1) and (len(patient_name) >= 1):
+        db_return = db.select_sus_name(sus_number, patient_name)
+        if not db_return:
+            raise error.RECORD_N_FOUND_ERROR
         else:
-            return dados
-    if len(num_sus) >= 1:
-        dados = db.select_sus(num_sus)
-        if not dados:
-            raise error.N_ENCONTRADO_ERROR
+            return db_return
+    if len(sus_number) >= 1:
+        db_return = db.select_sus(sus_number)
+        if not db_return:
+            raise error.RECORD_N_FOUND_ERROR
         else:
-            return dados
-    if len(nome_paciente) >= 1:
-        dados = db.select_nome(nome_paciente)
-        if not dados:
-            raise error.N_ENCONTRADO_ERROR
+            return db_return
+    if len(patient_name) >= 1:
+        db_return = db.select_name(patient_name)
+        if not db_return:
+            raise error.RECORD_N_FOUND_ERROR
         else:
-            return dados
-    if dt_nasc != 'Ano-Mês-Dia':
-        if match(Regex.DATA_REGEX, dt_nasc):
-            dados = db.select_nasc(dt_nasc)
-            if not dados:
-                raise error.N_ENCONTRADO_ERROR
+            return db_return
+    if birth_date != 'Ano-Mês-Dia':
+        if match(Regex.DATE_REGEX, birth_date):
+            db_return = db.select_birth(birth_date)
+            if not db_return:
+                raise error.RECORD_N_FOUND_ERROR
             else:
-                return dados
-    raise error.INPUT_EM_BRANCO
+                return db_return
+    raise error.EMPTY_INPUT_ERROR
 
 
-def validate_db_return_devolvidos():
+def validate_db_return_all_returned():
     """Valida a saída de dados do DB para prontuários devolvidos, caso não encontre, retorna um erro."""
-    dados = db.select_devolvidos()
-    if not dados:
-        raise error.N_ENCONTRADO_ERROR
+    db_return = db.select_returned()
+    if not db_return:
+        raise error.RECORD_N_FOUND_ERROR
     else:
-        return dados
+        return db_return
 
 
-def validate_db_return_n_devolvidos():
+def validate_db_return_all_n_returned():
     """Valida a saida de dados do DB para prontuários não devolvidos, caso não encontre, retorna um erro."""
-    dados = db.select_nao_devolvidos()
-    if not dados:
-        raise error.N_ENCONTRADO_ERROR
+    db_return = db.select_n_returned()
+    if not db_return:
+        raise error.RECORD_N_FOUND_ERROR
     else:
-        return dados
+        return db_return
 
 
-def validate_data_only(ano, mes, dia):
+def validate_only_date(year, month, day):
     """Valida a data, apenas a data."""
-    data = f'{ano}-{mes}-{dia}'
-    if data != 'Ano-Mês-Dia':
-        if not match(Regex.DATA_REGEX, data):
-            raise error.NASC_ERROR
+    date = f'{year}-{month}-{day}'
+    if date != 'Ano-Mês-Dia':
+        if not match(Regex.DATE_REGEX, date):
+            raise error.BIRTH_ERROR
     return 1
 
 
-def validate_out(num_sus, nome_funcionario, dt_saida, hr_saida):
+def validate_out(sus_number, employee_name, out_date, out_hour):
     """Valida a saída do prontuário."""
-    if validate_saida(num_sus):
-        if not match(Regex.SUS_REGEX, num_sus):
+    if validate_out_record(sus_number):
+        if not match(Regex.SUS_REGEX, sus_number):
             raise error.SUS_ERROR
-        if not match(Regex.FUNCIONARIO_REGEX, nome_funcionario):
-            raise error.FUNCIONARIO_ERROR
-        if not match(Regex.DATA_REGEX, dt_saida):
-            raise error.DATA_ERROR
-        if not match(Regex.HORA_REGEX, hr_saida):
-            raise error.HORA_ERROR
+        if not match(Regex.EMPLOYEE_REGEX, employee_name):
+            raise error.EMPLOYEE_ERROR
+        if not match(Regex.DATE_REGEX, out_date):
+            raise error.DATE_ERROR
+        if not match(Regex.HOUR_REGEX, out_hour):
+            raise error.HOUR_ERROR
     return 1
 
 
-def validate_in(num_sus, nome_funcionario, dt_chegada, hr_chegada):
+def validate_returned(sus_number, employee_name, returned_date, returned_hour):
     """Valida a volta do prontuário."""
-    dt_saida, hr_saida = str(db.select_sus(num_sus)[0][7]).split(' ')
-    if validate_chegada(num_sus):
-        date_saida = datetime.strptime(dt_saida, '%Y-%m-%d')
-        date_chegada = datetime.strptime(dt_chegada, '%Y-%m-%d')
-        hora_saida = datetime.strptime(hr_saida, '%H:%M')
-        hora_chegada = datetime.strptime(hr_chegada, '%H:%M')
-        if not match(Regex.SUS_REGEX, num_sus):
+    out_date, out_hour = str(db.select_sus(sus_number)[0][7]).split(' ')
+    if validate_returned_record(sus_number):
+        out_dt = datetime.strptime(out_date, '%Y-%m-%d')
+        returned_dt = datetime.strptime(returned_date, '%Y-%m-%d')
+        out_hr = datetime.strptime(out_hour, '%H:%M')
+        returned_hr = datetime.strptime(returned_hour, '%H:%M')
+        if not match(Regex.SUS_REGEX, sus_number):
             raise error.SUS_ERROR
-        if not match(Regex.FUNCIONARIO_REGEX, nome_funcionario):
-            raise error.FUNCIONARIO_ERROR
+        if not match(Regex.EMPLOYEE_REGEX, employee_name):
+            raise error.EMPLOYEE_ERROR
         # Verifica data se não é menor que a data de saida
-        if not match(Regex.DATA_REGEX, dt_chegada):
-            raise error.DATA_ERROR
-        elif not match(Regex.HORA_REGEX, hr_chegada):
-            raise error.HORA_ERROR
+        if not match(Regex.DATE_REGEX, returned_date):
+            raise error.DATE_ERROR
+        elif not match(Regex.HOUR_REGEX, returned_hour):
+            raise error.HOUR_ERROR
         else:
-            if date_saida > date_chegada:
-                raise error.DATA_MENOR_ERROR
-            elif date_saida == date_chegada:
-                if hora_saida > hora_chegada:
-                    raise error.HORA_MENOR_ERROR
+            if out_dt > returned_dt:
+                raise error.MINOR_DATE_ERROR
+            elif out_dt == returned_dt:
+                if out_hr > returned_hr:
+                    raise error.MINOR_HOUR_ERROR
     return 1
 
 
-def validate_chegada(num_sus):
+def validate_returned_record(sus_number):
     """Verifica se prontuário está fora do arquivo antes de registrar chegada."""
-    if movimentacao(num_sus):
-        db_values = db.select_sus(num_sus)
+    if movimentacao(sus_number):
+        db_values = db.select_sus(sus_number)
         if db_values[0][10]:
-            raise error.DEVOLVIDO_ERROR
+            raise error.RETURNED_ERROR
     return 1
 
 
-def validate_saida(num_sus):
+def validate_out_record(sus_number):
     """Verifica se o prontuário está no arquivo antes de registrar saída."""
-    if not match(Regex.SUS_REGEX, num_sus):
+    if not match(Regex.SUS_REGEX, sus_number):
         raise error.SUS_ERROR
-    db_values = db.select_sus(num_sus)
+    db_values = db.select_sus(sus_number)
     if not db_values[0][10]:
-        raise error.NAO_DEVOLVIDO_ERROR
+        raise error.NOT_RETURNED_ERROR
     return 1
 
 
-def movimentacao(num_sus):
+def movimentacao(sus_number):
     """Verifica se prontuário possui movimentação."""
-    if not match(Regex.SUS_REGEX, num_sus):
+    if not match(Regex.SUS_REGEX, sus_number):
         raise error.SUS_ERROR
-    db_values = db.select_sus(num_sus)
+    db_values = db.select_sus(sus_number)
     if db_values[0][10] == -1:
-        raise error.SEM_MOVIMENTO_ERROR
+        raise error.NOT_UPDATE_ERROR
     return 1
-
-
-if __name__ == '__main__':
-    try:
-        print(validate_login_usuario('Maik4521', 'A1515151sss'))
-    except ValueError as e:
-        print(e)
