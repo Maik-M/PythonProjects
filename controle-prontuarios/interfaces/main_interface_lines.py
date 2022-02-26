@@ -14,9 +14,15 @@ class MainInterfaceLines:
         # Var
         days = [i for i in range(1, 32)]
         mounths = ('Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez')
-        years = [int(year) for year in range(date.today().year, date.today().year - 150, -1)]
+        years = [int(year) for year in range(date.today().year, date.today().year - 130, -1)]
 
         # Lines --------------------------------------------------------------------------------------------------------
+        # Main Greetings Lines
+        self._main_greetings_line = [
+            [sg.Text('',
+                     font=('Arial', 10), key='-main_greetings-', text_color='#555555', background_color='#dcdcdc', pad=(5, 0))]
+        ]
+
         # Registration Lines Tab
         self._resgistration_left_line = [
             [sg.Text('N° SUS',
@@ -24,34 +30,34 @@ class MainInterfaceLines:
             [sg.Input(key='-r_sus-',pad=((5, 5), (0, 5)))],
             [sg.Text('NOME DO PACIENTE',
                      font=('Arial', 8), pad=((5, 5), (0, 0)), text_color='#00345B', background_color='#d1d1d1')],
-            [sg.Input(key='-r_nome-', pad=((5, 5), (0, 5)))],
+            [sg.Input(key='-r_name-', pad=((5, 5), (0, 5)))],
             [sg.Text('NOME DA MÃE',
                      font=('Arial', 8), pad=((5, 5), (0, 0)), text_color='#00345B', background_color='#d1d1d1')],
-            [sg.Input(key='-r_nome_mae-', pad=((5, 5), (0, 5)))]
+            [sg.Input(key='-r_mother-', pad=((5, 5), (0, 5)))]
         ]
 
         self._resgistration_right_line = [
             [sg.Text('SEXO',
                      font=('Arial', 8), pad=((5, 5), (0, 0)), text_color='#00345B', background_color='#d1d1d1')],
-            [sg.Radio('M', 'SEXO',
-                      key='-r_sexo_M-', font=('Arial', 8), pad=((5, 5), (0, 5)), text_color='#00345B', background_color='#d1d1d1'),
-             sg.Radio('F', 'SEXO',
-                      key='-r_sexo_F-', font=('Arial', 8), pad=((5, 5), (0, 5)), text_color='#00345B', background_color='#d1d1d1')],
+            [sg.Radio('M', 'GENDER',
+                      key='-r_m_gender-', font=('Arial', 8), pad=((5, 5), (0, 5)), text_color='#00345B', background_color='#d1d1d1'),
+             sg.Radio('F', 'GENDER',
+                      key='-r_f_gender-', font=('Arial', 8), pad=((5, 5), (0, 5)), text_color='#00345B', background_color='#d1d1d1')],
             [sg.Text('DATA DE NASCIMENTO',
                      font=('Arial', 8), pad=((5, 5), (5, 0)), text_color='#00345B', background_color='#d1d1d1')],
             [sg.OptionMenu(values=days,
-                           key='-r_nascimento_dia-', default_value='Dia', size=(2, 1)),
+                           key='-r_day_birth-', default_value='Dia', size=(2, 1)),
              sg.OptionMenu(values=[mounth for mounth in mounths],
-                           key='-r_nascimento_mes-', default_value='Mês', size=(4, 1)),
+                           key='-r_month_birth-', default_value='Mês', size=(4, 1)),
              sg.OptionMenu(values=years,
-                           key='-r_nascimento_ano-', default_value='Ano', size=(4, 1))]
+                           key='-r_year_birth-', default_value='Ano', size=(4, 1))]
 
         ]
         self._registration_buttons_line = [
             sg.Button('Cadastrar',
-                      key='-r_button_cadastrar-', pad=((10, 5), (13, 0))),
+                      key='-r_register_button-', pad=((10, 5), (13, 0))),
             sg.Button('Limpar',
-                      key='-r_button_limpar-', pad=((5, 5), (13, 0)))
+                      key='-r_clean_button-', pad=((5, 5), (13, 0)))
         ]
 
         # Search Lines Tab
@@ -61,52 +67,52 @@ class MainInterfaceLines:
             [sg.Input(key='-s_sus-', pad=((5, 5), (0, 5)))],
             [sg.Text('NOME',
                      font=('Arial', 8), pad=(5, 0), text_color='#00345B', background_color='#d1d1d1')],
-            [sg.Input(key='-s_nome-', pad=((5, 5), (0, 5)))],
+            [sg.Input(key='-s_name-', pad=((5, 5), (0, 5)))],
             [sg.Text('DATA DE NASCIMENTO',
                      font=('Arial', 8), pad=(5, 0), text_color='#00345B', background_color='#d1d1d1')],
             [sg.OptionMenu(values=days,
-                           key='-s_nascimento_dia-', default_value='Dia', size=(2, 1)),
+                           key='-s_day_birth-', default_value='Dia', size=(2, 1)),
              sg.OptionMenu(values=[mounth for mounth in mounths],
-                           key='-s_nascimento_mes-', default_value='Mês', size=(4, 1)),
+                           key='-s_month_birth-', default_value='Mês', size=(4, 1)),
              sg.OptionMenu(values=years,
-                           key='-s_nascimento_ano-',default_value='Ano', size=(4, 1))]
+                           key='-s_year_birth-',default_value='Ano', size=(4, 1))]
         ]
 
         self._search_buttons_line = [
-            [sg.Button('Buscar', key='-s_button_buscar-', font=('Helvetica', 8), size=(13, 1), pad=((5, 5), (0, 0)))],
-            [sg.Button('Limpar', key='-s_button_limpar-', font=('Helvetica', 8), size=(13, 1), pad=((5, 5), (2, 0)))],
+            [sg.Button('Buscar', key='-s_search_button-', font=('Helvetica', 8), size=(13, 1), pad=((5, 5), (0, 0)))],
+            [sg.Button('Limpar', key='-s_clean_button-', font=('Helvetica', 8), size=(13, 1), pad=((5, 5), (2, 0)))],
             [sg.Text('LISTAR', font=('Arial Black', 8), text_color='#00345B', background_color='#d1d1d1', pad=((5, 5), (13, 0)))],
-            [sg.Button('Entregues', key='-s_button_devolvidos-', font=('Helvetica', 8), size=(13, 1), pad=((5, 5), (2, 0)))],
-            [sg.Button('Não Entregues', key='-s_button_n_devolvidos-', font=('Helvetica', 8), size=(13, 1), pad=((5, 5), (2, 0)))]
+            [sg.Button('Entregues', key='-s_returned_button-', font=('Helvetica', 8), size=(13, 1), pad=((5, 5), (2, 0)))],
+            [sg.Button('Não Entregues', key='-s_n_returned_button-', font=('Helvetica', 8), size=(13, 1), pad=((5, 5), (2, 0)))]
         ]
 
-        # In/Out Lines Tab
+        # Returned/Out Lines Tab
         self._in_out_left_line = [
             [sg.Text('N° SUS DO PRONTUÁRIO',
                      font=('Arial', 8), text_color='#00345B', background_color='#d1d1d1', pad=(5, 0))],
-            [sg.Input(key='-io_sus-', pad=((5, 5), (0, 5)))],
+            [sg.Input(key='-r_o_sus-', pad=((5, 5), (0, 5)))],
             [sg.Text('NOME DO FUNCIONÁRIO',
                      font=('Arial', 8), text_color='#00345B', background_color='#d1d1d1', pad=(5, 0))],
-            [sg.Input(key='-io_funcionario-', pad=((5, 5), (0, 5)))],
+            [sg.Input(key='-r_o_employee-', pad=((5, 5), (0, 5)))],
             [sg.Text('DATA DE SAÍDA / CHEGADA',
                      font=('Arial', 8), text_color='#00345B', background_color='#d1d1d1', pad=(5, 0))],
             [sg.OptionMenu(values=days,
-                           key='-io_dia-', default_value='Dia', size=(2, 1)),
+                           key='-r_o_day-', default_value='Dia', size=(2, 1)),
              sg.OptionMenu(values=[mounth for mounth in mounths],
-                           key='-io_mes-', default_value='Mês', size=(4, 1)),
+                           key='-r_o_month-', default_value='Mês', size=(4, 1)),
              sg.OptionMenu(values=years,
-                           key='-io_ano-', default_value='Ano', size=(4, 1))],
+                           key='-r_o_year-', default_value='Ano', size=(4, 1))],
             [sg.Text('HORA DA SAÍDA / CHEGADA',
                      font=('Arial', 8), text_color='#00345B', background_color='#d1d1d1', pad=(5, 0))],
-            [sg.Input(key='-io_hora-', size=(5, 2), pad=((5, 5), (0, 5)))]
+            [sg.Input(key='-r_o_hour-', size=(5, 2), pad=((5, 5), (0, 5)))]
         ]
         self._in_out_right_line = [
             [sg.Button('Saída',
-                       key='-io_saida-', size=(10, 1), pad=((5, 5), (0, 10)))],
+                       key='r_o_out_button-', size=(10, 1), pad=((5, 5), (0, 10)))],
             [sg.Button('Chegada',
-                       key='-io_chegada-', size=(10, 1), pad=((5, 5), (10, 10)))],
+                       key='-r_o_returned_button-', size=(10, 1), pad=((5, 5), (10, 10)))],
             [sg.Button('Limpar',
-                       key='-io_limpar-', size=(10, 1), pad=((5, 5), (10, 10)))]
+                       key='-r_o_clean_button-', size=(10, 1), pad=((5, 5), (10, 10)))]
         ]
 
         # Edit / Delete Lines
@@ -116,35 +122,35 @@ class MainInterfaceLines:
             [sg.Input(key='-edit_del_search_sus-', size=(20, 1), pad=((5, 5), (0, 5))),
              sg.Button('Editar', key='-edit_button-', font=('Helvetica', 8), size=(7, 1), pad=((5, 5), (0, 5))),
              sg.Button('Excluir', key='-delete_button-', font=('Helvetica', 8), size=(7, 1), pad=((5, 5), (0, 5))),
-             sg.Button('Limpar', key='-edit_delete_limpar-', font=('Helvetica', 8), size=(7, 1), pad=((5, 5), (0, 5)))]
+             sg.Button('Limpar', key='-edit_delete_clean_button-', font=('Helvetica', 8), size=(7, 1), pad=((5, 5), (0, 5)))]
         ]
 
         self._edit_left_line = [
             [sg.Text('NOME DO PACIENTE (NOVO)',
                      font=('Arial', 8), pad=((5, 5), (0, 0)), text_color='#00345B', background_color='#d1d1d1')],
-            [sg.Input(key='-edit_nome-', pad=((5, 5), (0, 5)))],
+            [sg.Input(key='-edit_name-', pad=((5, 5), (0, 5)))],
             [sg.Text('NOME DA MÃE (NOVO)',
                      font=('Arial', 8), pad=((5, 5), (0, 0)), text_color='#00345B', background_color='#d1d1d1')],
-            [sg.Input(key='-edit_nome_mae-', pad=((5, 5), (0, 5)))]
+            [sg.Input(key='-edit_mother-', pad=((5, 5), (0, 5)))]
         ]
 
         self._edit_right_line = [
             [sg.Text('SEXO (NOVO)',
                      font=('Arial', 8), pad=((5, 5), (0, 0)), text_color='#00345B', background_color='#d1d1d1')],
             [sg.Radio('M', 'SEXO_EDIT',
-                      key='-edit_sexo_M-', font=('Arial', 8), pad=((5, 5), (0, 5)), text_color='#00345B',
+                      key='-edit_m_gender-', font=('Arial', 8), pad=((5, 5), (0, 5)), text_color='#00345B',
                       background_color='#d1d1d1'),
              sg.Radio('F', 'SEXO_EDIT',
-                      key='-edit_sexo_F-', font=('Arial', 8), pad=((5, 5), (0, 5)), text_color='#00345B',
+                      key='-edit_f_gender-', font=('Arial', 8), pad=((5, 5), (0, 5)), text_color='#00345B',
                       background_color='#d1d1d1')],
             [sg.Text('DATA DE NASCIMENTO (NOVA)',
                      font=('Arial', 8), pad=((5, 5), (5, 0)), text_color='#00345B', background_color='#d1d1d1')],
             [sg.OptionMenu(values=days,
-                           key='-edit_nascimento_dia-', default_value='Dia', size=(2, 1)),
+                           key='-edit_day_birth-', default_value='Dia', size=(2, 1)),
              sg.OptionMenu(values=[mounth for mounth in mounths],
-                           key='-edit_nascimento_mes-', default_value='Mês', size=(4, 1)),
+                           key='-edit_month_birth-', default_value='Mês', size=(4, 1)),
              sg.OptionMenu(values=years,
-                           key='-edit_nascimento_ano-', default_value='Ano', size=(4, 1))]
+                           key='-edit_year_birth-', default_value='Ano', size=(4, 1))]
         ]
 
         # Search Result Line
@@ -154,6 +160,11 @@ class MainInterfaceLines:
         ]
 
         # Columns ------------------------------------------------------------------------------------------------------
+        self._main_greetings_column = sg.Column(
+            self._main_greetings_line,
+            key='-main_greetings_column-', background_color='#dcdcdc', pad=(0, (5, 0))
+        )
+
         # Registration Column
         self._registration_left_column = sg.Column(
             self._resgistration_left_line,
@@ -213,7 +224,7 @@ class MainInterfaceLines:
                  self._registration_right_column],
                 self._registration_buttons_line
             ], title='  CADASTRAR PACIENTE  ', key='-registration_frame-', font=('Arial Black', 10), title_color='#00345B',
-                background_color='#d1d1d1', expand_x=True, border_width=2, size=(0, 200), pad=((0, 0), (10, 0))
+                background_color='#d1d1d1', expand_x=True, border_width=2, size=(0, 200), pad=(0, (10, 0))
             )
         ]
 

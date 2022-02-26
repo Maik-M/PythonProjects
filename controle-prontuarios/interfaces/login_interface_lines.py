@@ -23,17 +23,17 @@ class LoginInterfaceLines:
             [sg.Input(key='-login-', pad=((5, 5), (0, 5)))],
             [sg.Text('SENHA',
                      font=('Arial Black', 8), text_color='#00345B', background_color='#dcdcdc', pad=((5, 5), (10, 0)))],
-            [sg.Input(key='-senha-', password_char='*', pad=((5, 5), (0, 5)))],
+            [sg.Input(key='-password-', password_char='*', pad=((5, 5), (0, 5)))],
         ]
         self._login_button_entrar = [
             [sg.Button('Entrar',
-                       key='-entrar-', font=('Arial Black', 8), expand_x=True, pad=(0, 0))]
+                       key='-login_button-', font=('Arial Black', 8), expand_x=True, pad=(0, 0))]
         ]
         self._login_button_cadastrar = [
             [sg.Text('Não possui cadastro?',
                      font=('Arial', 7), text_color='#00345b', background_color='#dcdcdc', pad=((0, 2), (5, 5))),
              sg.Button('Cadastrar',
-                       key='-cadastrar-', border_width=0, font=('Arial Black', 7), button_color=('#00345b', '#dcdcdc'),
+                       key='-new_user_button-', border_width=0, font=('Arial Black', 7), button_color=('#00345b', '#dcdcdc'),
                        mouseover_colors=('#ff1f1f', '#dcdcdc'), pad=((0, 0), (5, 5)))]
         ]
         self._login_window_developer = [
@@ -76,9 +76,9 @@ class LoginInterfaceLines:
         return self._login_window
 
     @property
-    def id_usuario(self):
+    def user_id(self):
         return self.__id_usuario
 
-    @id_usuario.setter
-    def id_usuario(self, usuario):
+    @user_id.setter
+    def user_id(self, usuario):
         self.__id_usuario = usuario
