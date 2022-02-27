@@ -42,15 +42,15 @@ class Keys:
     S_RETURNED_BUTTON = '-s_returned_button-'
     S_N_RETURNED_BUTTON = '-s_n_returned_button-'
 
-    R_O_SUS_INPUT = '-r_o_sus-'
-    R_O_EMPLOYEE_INPUT = '-r_o_employee-'
-    R_O_DAY_INPUT = '-r_o_day-'
-    R_O_MONTH_INPUT = '-r_o_month-'
-    R_O_YEAR_INPUT = '-r_o_year-'
-    R_O_HOUR_INPUT = '-r_o_hour-'
-    R_O_OUT_BUTTON = '-r_o_out_button-'
-    R_O_RETURNED_BUTTON = '-r_o_returned_button-'
-    R_O_CLEAN_BUTTON = '-r_o_clean_button-'
+    R_O_SUS_INPUT = '-ro_sus-'
+    R_O_EMPLOYEE_INPUT = '-ro_employee-'
+    R_O_DAY_INPUT = '-ro_day-'
+    R_O_MONTH_INPUT = '-ro_month-'
+    R_O_YEAR_INPUT = '-ro_year-'
+    R_O_HOUR_INPUT = '-ro_hour-'
+    R_O_OUT_BUTTON = '-out_button-'
+    R_O_RETURNED_BUTTON = '-returned_button-'
+    R_O_CLEAN_BUTTON = '-ro_clean_button-'
 
     EDIT_DEL_SEARCH_SUS = '-edit_del_search_sus-'
     EDIT_NAME_INPUT = '-edit_name-'
@@ -141,4 +141,4 @@ class Regex:
     GENDER_REGEX = compile(r'[MF]$')
     DATE_REGEX = compile(r'(([1]|[2])([0-9]{3}))-(([0][1-9])|([1][0-2]))-(([0][1-9])|([1-2][0-9])|([3][0-1]))$')
     HOUR_REGEX = compile(r'(([0][0-9])|([1][0-9])|([2][1-3])):([0-5][0-9])$')
-    EMPLOYEE_REGEX = compile(r'[a-zA-Z]{2,15}$')
+    EMPLOYEE_REGEX = compile(r'[a-z A-Z]{2,50}$')

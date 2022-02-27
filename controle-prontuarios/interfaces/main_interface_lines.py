@@ -90,29 +90,29 @@ class MainInterfaceLines:
         self._in_out_left_line = [
             [sg.Text('N° SUS DO PRONTUÁRIO',
                      font=('Arial', 8), text_color='#00345B', background_color='#d1d1d1', pad=(5, 0))],
-            [sg.Input(key='-r_o_sus-', pad=((5, 5), (0, 5)))],
+            [sg.Input(key='-ro_sus-', pad=((5, 5), (0, 5)))],
             [sg.Text('NOME DO FUNCIONÁRIO',
                      font=('Arial', 8), text_color='#00345B', background_color='#d1d1d1', pad=(5, 0))],
-            [sg.Input(key='-r_o_employee-', pad=((5, 5), (0, 5)))],
+            [sg.Input(key='-ro_employee-', pad=((5, 5), (0, 5)))],
             [sg.Text('DATA DE SAÍDA / CHEGADA',
                      font=('Arial', 8), text_color='#00345B', background_color='#d1d1d1', pad=(5, 0))],
             [sg.OptionMenu(values=days,
-                           key='-r_o_day-', default_value='Dia', size=(2, 1)),
+                           key='-ro_day-', default_value='Dia', size=(2, 1)),
              sg.OptionMenu(values=[mounth for mounth in mounths],
-                           key='-r_o_month-', default_value='Mês', size=(4, 1)),
+                           key='-ro_month-', default_value='Mês', size=(4, 1)),
              sg.OptionMenu(values=years,
-                           key='-r_o_year-', default_value='Ano', size=(4, 1))],
+                           key='-ro_year-', default_value='Ano', size=(4, 1))],
             [sg.Text('HORA DA SAÍDA / CHEGADA',
                      font=('Arial', 8), text_color='#00345B', background_color='#d1d1d1', pad=(5, 0))],
-            [sg.Input(key='-r_o_hour-', size=(5, 2), pad=((5, 5), (0, 5)))]
+            [sg.Input(key='-ro_hour-', size=(5, 2), pad=((5, 5), (0, 5)))]
         ]
         self._in_out_right_line = [
             [sg.Button('Saída',
-                       key='r_o_out_button-', size=(10, 1), pad=((5, 5), (0, 10)))],
+                       key='-out_button-', size=(10, 1), pad=((5, 5), (0, 10)))],
             [sg.Button('Chegada',
-                       key='-r_o_returned_button-', size=(10, 1), pad=((5, 5), (10, 10)))],
+                       key='-returned_button-', size=(10, 1), pad=((5, 5), (10, 10)))],
             [sg.Button('Limpar',
-                       key='-r_o_clean_button-', size=(10, 1), pad=((5, 5), (10, 10)))]
+                       key='-ro_clean_button-', size=(10, 1), pad=((5, 5), (10, 10)))]
         ]
 
         # Edit / Delete Lines

@@ -169,7 +169,7 @@ class DBFunctions:
             cursor.execute('pragma foreign_keys=ON')
             cursor.execute('UPDATE prontuarios '
                            'SET func_saida=?, func_devolucao=?, dtHr_saida=?, dtHr_devolucao=?, is_devolvido=?, usuario=? '
-                           'WHERE sus_number=?',
+                           'WHERE num_sus=?',
                            (str(employee).upper(), None, str(dt_hr_out), None, N_RETURNED, int(user), int(sus_number)))
             conn.commit()
         except sqlite3.Error as BD_Error:
