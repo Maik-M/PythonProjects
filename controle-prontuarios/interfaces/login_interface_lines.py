@@ -68,7 +68,7 @@ class LoginInterfaceLines:
         self._developer_login_column = sg.Column(
             self._login_window_developer,
             key='-developer_login_column-', element_justification='center', vertical_alignment='bottom', background_color='#dcdcdc',
-            expand_x=True, expand_y=True, pad=((5, 5), (65, 0))
+            expand_x=True, expand_y=True, pad=((5, 5), (30, 0))
         )
 
     @property
