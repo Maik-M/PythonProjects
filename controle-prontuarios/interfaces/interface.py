@@ -201,7 +201,7 @@ class Interface(LoginInterfaceLines, NewUserInterfaceLines, MainInterfaceLines):
         months = Keys.MONTHS
         year = self.main_values[year_key]
         month = months[self.main_values[month_key]]
-        day = self.main_values[day_key]
+        day = f'0{self.main_values[day_key]}' if int(self.main_values[day_key]) <= 9 else self.main_values[day_key]
         if vf.validate_only_date(year, month, day):
             date = f'{year}-{month}-{day}'
             return date

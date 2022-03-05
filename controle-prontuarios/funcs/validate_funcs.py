@@ -181,7 +181,7 @@ def validate_only_date(year, month, day):
     date = f'{year}-{month}-{day}'
     if date != 'Ano-Mês-Dia':
         if not match(Regex.DATE_REGEX, date):
-            raise error.BIRTH_ERROR
+            raise error.DATE_ERROR
     return 1
 
 
